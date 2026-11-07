@@ -102,9 +102,9 @@ class EveryPageUsesTheModeTest(unittest.TestCase):
                 self.assertIn(token, bullet)
 
     def test_the_readme_tool_row_names_reboot(self):
-        rows = [line for line in page(README).split("\n") if line.startswith("| [`tools/tv.py`]")]
-        self.assertEqual(1, len(rows), "the README Tools table needs one tools/tv.py row")
-        self.assertIn("reboot", rows[0], "the row is where a reader learns the mode exists")
+        # No Tools table on the Fire OS front page; the mode is documented by tv.py's own usage.
+        self.assertFalse([l for l in page(README).split("\n") if l.startswith("| [`tools/tv.py`]")])
+        self.assertIn("--reboot", page(ROOT / "tools" / "tv.py"))
 
 
 class TheModeIsWhatThePagesPromiseTest(unittest.TestCase):

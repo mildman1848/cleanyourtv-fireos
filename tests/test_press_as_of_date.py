@@ -187,7 +187,7 @@ class TreeTest(unittest.TestCase):
 
     def test_the_pages_that_date_the_numbers_today(self):
         self.assertEqual(
-            {"README.md", "README.de.md", "README.nl.md", "README.pt-BR.md", "README.tr.md", "README.uk.md"},
+            {"README.nl.md", "README.pt-BR.md", "README.tr.md", "README.uk.md"},
             {name for name, _ in dated_pages()},
             "the front pages that close the coverage sentence with a date; a translation that copies the "
             "clause is read without being added here, and one that stops dating its numbers is a change")
@@ -206,8 +206,6 @@ class ReaderTest(unittest.TestCase):
 
     def test_each_page_s_clause_parses_to_its_own_day(self):
         expected = {
-            "README.md": (2026, 10, 31),
-            "README.de.md": (2026, 10, 31),
             "README.nl.md": (2026, 10, 31),
             "README.uk.md": (2026, 10, 31),
             "README.tr.md": (2026, 10, 31),

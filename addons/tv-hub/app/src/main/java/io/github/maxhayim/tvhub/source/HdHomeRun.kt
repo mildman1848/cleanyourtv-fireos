@@ -1,5 +1,8 @@
 package io.github.maxhayim.tvhub.source
 
+import io.github.maxhayim.tvhub.R
+import io.github.maxhayim.tvhub.TvHubApp
+
 import io.github.maxhayim.tvhub.data.Http
 import io.github.maxhayim.tvhub.model.RawChannel
 import io.github.maxhayim.tvhub.model.SourceConfig
@@ -54,14 +57,14 @@ object HdHomeRun {
 
     fun load(cfg: SourceConfig): ProviderResult {
         val host = clean(cfg.url)
-        if (host.isEmpty()) throw IOException("Enter the tuner's address, or scan for it")
+        if (host.isEmpty()) throw IOException(TvHubApp.str(R.string.ed_err_tuner))
         try {
             val lineupUrl = runCatching { JSONObject(Http.text("http://$host/discover.json", 64 * 1024)).optString("LineupURL") }
                 .getOrNull()?.takeIf { it.startsWith("http") } ?: "http://$host/lineup.json"
             val arr = JSONArray(Http.text(lineupUrl, 8L * 1024 * 1024))
             return parseLineup(arr, cfg)
         } catch (e: org.json.JSONException) {
-            throw IOException("The tuner's channel list could not be read")
+            throw IOException(TvHubApp.str(R.string.hd_no_list))
         } catch (e: Exception) {
             throw Http.friendly(e)
         }

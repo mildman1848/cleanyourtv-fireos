@@ -59,22 +59,19 @@ class Scripts(unittest.TestCase):
 
 
 class Readme(unittest.TestCase):
-    def test_section_is_there(self):
-        self.assertIsNotNone(home_section(), "README has no 'How the scripts protect Home' block")
+    """The Fire OS front page does not copy upstream's Home-guard block; it keeps the warning that matters."""
 
-    def test_every_recognised_launcher_is_named(self):
-        section = home_section()
-        self.assertIsNotNone(section)
-        known = sh_known()
-        self.assertTrue(known, "no stock launchers were read out of the script")
-        for pkg in known:
-            self.assertIn(pkg, section,
-                          f"README's Home block does not name {pkg}, which the install scripts disable")
+    def test_the_front_page_has_no_copy_of_the_home_block(self):
+        self.assertIsNone(home_section(), "the Fire OS README must not restore the upstream Home block")
 
-    def test_the_none_override_is_still_offered(self):
-        section = home_section()
-        self.assertIsNotNone(section)
-        self.assertIn("`none`", section, "the README no longer says STOCK_LAUNCHER=none keeps the stock launcher")
+    def test_the_front_page_keeps_build_and_install_off_fire_os(self):
+        text = README.read_text(encoding="utf-8")
+        self.assertIn("Do not run `launcher/build-and-install.sh` on Fire OS", text.replace("**", ""))
+
+    def test_the_scripts_still_offer_the_none_override(self):
+        for name in ("build-and-install.sh", "build-and-install.ps1"):
+            with self.subTest(script=name):
+                self.assertIn("none", (ROOT / "launcher" / name).read_text(encoding="utf-8"))
 
 
 class Readers(unittest.TestCase):

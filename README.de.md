@@ -1,498 +1,120 @@
-<p align="center">
-  <a href="https://cleanyour.tv"><img src="docs/banner.png" alt="CleanYourTV. Dein Fernseher, ohne Werbung. Entferne die vorinstallierte Software von jedem Android TV oder Google TV über WLAN und ersetze den werbelastigen Startbildschirm durch einen aufgeräumten Launcher, der wie ein Apple TV aussieht. Kein Root, kein Kabel, nichts wird deinstalliert, und die Wiederherstellung ist eine Zeile." width="800"></a>
-</p>
+# CleanYourTV für Fire TV (Fire OS)
 
-<p align="center">
-  <a href="README.md">English</a> · <a href="README.he.md" lang="he" dir="rtl">עברית</a> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.zh-TW.md">正體中文</a> · <a href="README.vi.md">Tiếng Việt</a> · <a href="README.ja.md">日本語</a> · <a href="README.it.md">Italiano</a> · <a href="README.pt-BR.md">Português</a> · <a href="README.nl.md">Nederlands</a> · Deutsch · <a href="README.uk.md">Українська</a> · <a href="README.tr.md">Türkçe</a>
-</p>
+[English](README.md) · Deutsch
 
-<p align="center">
-  <a href="https://github.com/Gathin23/cleanyourtv/stargazers"><img src="https://img.shields.io/github/stars/Gathin23/cleanyourtv?style=flat&cacheSeconds=1800&color=cfffcf&labelColor=15181e" alt="Sterne"></a>
-  <a href="https://github.com/Gathin23/cleanyourtv/pulls?q=is%3Amerged"><img src="https://img.shields.io/github/issues-search?query=repo%3AGathin23%2Fcleanyourtv%20is%3Apr%20is%3Amerged&style=flat&cacheSeconds=1800&label=zusammengef%C3%BChrte%20PRs&color=cfffcf&labelColor=15181e" alt="Zusammengeführte PRs"></a>
-  <a href="https://github.com/Gathin23/cleanyourtv/network/members"><img src="https://img.shields.io/github/forks/Gathin23/cleanyourtv?style=flat&cacheSeconds=1800&color=cfffcf&labelColor=15181e" alt="Forks"></a>
-  <a href="https://github.com/Gathin23/cleanyourtv/graphs/contributors"><img src="https://img.shields.io/github/contributors/Gathin23/cleanyourtv?style=flat&cacheSeconds=1800&color=cfffcf&labelColor=15181e" alt="Mitwirkende"></a>
-  <a href="https://buymeacoffee.com/gathint"><img src="https://img.shields.io/badge/support-%E2%9D%A4-ff5e8a?style=flat&labelColor=15181e" alt="Unterstützen, einen Kaffee spendieren"></a>
-  <a href="https://www.producthunt.com/products/cleanyourtv"><img src="https://img.shields.io/badge/Product%20Hunt-upvote%20%E2%96%B2-da552f?style=flat&logo=producthunt&logoColor=white&labelColor=15181e" alt="CleanYourTV auf Product Hunt"></a>
-</p>
+**Ein gezielter Community-Fork, der CleanYourTV für Amazon Fire TV anpasst.** Dieses Repository ist weder das allgemeine Android-TV-/Google-TV-Projekt noch eine offizielle Veröffentlichung des CleanYourTV-Upstreams.
 
-<p align="center">
-  <a href="https://trendshift.io/repositories/310225"><img src="docs/trending-badge.png" alt="Platz 1 der Trend-Repositories der Woche, 19.–25. Oktober 2026, über trendshift.io" width="360"></a>
-</p>
+Das ursprüngliche CleanYourTV bleibt das Projekt für Android TV und Google TV: [Gathin23/cleanyourtv](https://github.com/Gathin23/cleanyourtv). Dieser Fork übernimmt den Launcher und ausgewählte Werkzeuge als Grundlage und ergänzt Fire-OS-spezifische Installationssicherungen und Experimente. Ziel ist, den CleanYourTV-Launcher auf einem Fire TV Stick oder Cube nutzbar zu machen, ohne so zu tun, als wäre Fire OS normales Android TV. Das wäre eine optimistische, aber falsche Annahme.
 
-<p align="center">
-  <a href="docs/PRESS.md"><img src="docs/card.jpg" alt="456 TV-Modelle · 122 Marken · 31 Sprachen · Launcher mit 572 KB. Erwähnt in TechCrunch, TechRadar, Tom's Guide, Mashable, Android Authority, XDA, FlatpanelsHD, It's FOSS, Phandroid, GIGAZINE, Xataka, WinFuture, Frandroid, Macitynet, Techaeris, TechPP und 396 weitere: 412 Artikel aus 54 Ländern. Vorher: der Google-TV-Startbildschirm mit einer bezahlten Anzeige. Nachher: der Clean-Your-TV-Launcher." width="800"></a>
-</p>
+> **Aktueller Stand:** Für den Launcher gibt es ein öffentliches, mit einem Debug-Schlüssel signiertes Test-APK. Die drei Add-ons haben deutsche Ressourcen und debug-signierte Test-APKs im [Fire-OS-Add-on-Test-Release](https://github.com/mildman1848/cleanyourtv-fireos/releases/tag/fireos-addons-test-2026-11-07). Unit-Tests, Lint und Release-Builds waren erfolgreich. Das sind Test-Builds, keine produktiv signierten APKs. Das Verhalten der Add-ons wurde noch nicht auf einem echten Fire TV geprüft; Home-Übernahme und Launcher-Autostart beim Booten bleiben ungeprüft.
 
-## Einstieg
+## Was dieser Fork ändert
 
-| Du hast | Geh zu |
-|---|---|
-| **Einen Android TV oder Google TV** | [Schnellstart](#schnellstart): ein Coding-Assistent erledigt die Arbeit in etwa fünfzehn Minuten. |
-| **Einen Samsung, LG, Roku, Vizio oder Hisense VIDAA** | [cleanyour.tv/not-android](https://cleanyour.tv/not-android): CleanYourTV läuft dort nicht, das Tracking lässt sich mit der Fernbedienung abschalten. |
-| **Telefon oder Laptop, kein Coding-Agent** | Eine der [Community-Apps](https://cleanyour.tv/app) für Android-Telefone, Mac und Windows, gebaut von unabhängigen Entwicklern. |
-| **Willst es erst sehen** | [Was du bekommst](#was-du-bekommst): Bilder des neuen Startbildschirms. |
+- **Fire-OS-sichere APK-Installation.** `tools/install_apk.py` installiert eine APK als normale App. Es ändert weder die Home-App noch aktiviert es Bedienungshilfen oder schreibt Secure Settings.
+- **Geschützte Amazon-Komponenten.** Fire-TV-Home, Amazon-Einstellungen und Quick Settings sind in den Paket-Deaktivierungs- und Wiederherstellungspfaden geschützt. Systempakete werden nicht deinstalliert.
+- **Optionaler Home-Redirect im Launcher.** `HomeRedirectService` ist nach der Installation ausgeschaltet. Er ist ein Experiment, kein unterstützter Ersatz für Fire TVs Home-Bildschirm; das Verhalten hängt vom konkreten Gerät und Fire OS ab.
+- **Zusatz-Apps.** Separate Apps für TV Hub, Sources und Open on wake werden vorbereitet. Deutsche Übersetzungen und installierbare APKs gehören zum Umfang dieses Forks; siehe [Add-on-Status](#add-ons).
 
-**Offizielle Links:** [cleanyour.tv](https://cleanyour.tv) und dieses Repo. Andere Domains mit dem Namen, etwa
-cleanyourtv.com, gehören nicht zu diesem Projekt ([#1004](https://github.com/Gathin23/cleanyourtv/issues/1004)).
-CleanYourTV veröffentlicht keine App in einem App Store, und auch clean-your-tv.net gehört nicht zu uns.
+Dieser Fork enthält derzeit **keinen verifizierten Fire-OS-Autostart**, keine Fire-OS-Bereinigungs-App für Einstellungen und keine bestätigte Liste mit „50+“ Fire-OS-Einstellungen. Die als Referenz verwendete Quelle belegt Fire-OS-Erkennung und Paket-Schutz, nicht eine solche Liste. Unbelegte `settings put`-Befehle werden nicht ergänzt.
 
-[So funktioniert es](#so-funktioniert-es) · [Schnellstart](#schnellstart) · [Was du bekommst](#was-du-bekommst) ·
-[Unterstützte Fernseher](#unterstützte-fernseher) · [Von Hand](#von-hand) · [Der Launcher](#der-launcher) ·
-[Wiederherstellen](#fernseher-wiederherstellen) · [Firmware-Updates](#nach-einem-firmware-update) ·
-[Fragen](#häufige-fragen) · [Mitmachen](#mitmachen)
+## Launcher herunterladen und testen
 
-## So funktioniert es
+Das aktuelle Test-Release findest du hier:
 
-Android-Fernseher haben dieselbe Debug-Brücke wie Android-Telefone. Schalte USB-Debugging in den
-Entwickleroptionen des Fernsehers ein, erlaube dem Computer einmal den Zugriff, der Rest ist normales Android-Werkzeug:
+**[CleanYourTV-Fire-OS-Test-Release herunterladen](https://github.com/mildman1848/cleanyourtv-fireos/releases/tag/fireos-test-2026-11-07)**
 
-| Schritt | Was passiert |
-|---|---|
-| **Sichern** | Die Liste der installierten Pakete und die Einstellungen. |
-| **Deaktivieren** | Telemetrie des Herstellers, Werbedienste, Inhaltszeilen und vorinstallierter Ballast, mit `pm disable-user`. Nichts wird deinstalliert, ein Wiederherstellungs-Skript kann jeden Schritt rückgängig machen. |
-| **Installieren** | Ein kleiner nativer Launcher, der zum Standard-Startbildschirm wird. |
+Es enthält den bestehenden CleanYourTV-Launcher als normale APK. Die Signatur stammt von einem Debug-Schlüssel und ist für erste Sideload-Tests gedacht, nicht für eine produktive Veröffentlichung. Die Installation macht den Launcher **nicht** zum Fire-TV-Home-Bildschirm und aktiviert **nicht** den Redirect-Dienst.
 
-**Kein Root, kein Kabel, nichts wird deinstalliert, und eine Zeile stellt alles wieder her, wenn du es dir anders überlegst.**
-
-Der Ballast unterscheidet sich je nach Marke. Der Prompt lässt den Coding-Assistenten ihn auf deinem Fernseher finden und nachfragen,
-bevor etwas angefasst wird, das du vielleicht nutzt.
-
-## Schnellstart
-
-| Du hast | Tu dies |
-|---|---|
-| **Einen Computer** | Den Prompt mit einem Coding-Assistenten nutzen: die drei Schritte unten. |
-| **Einen Computer, keinen Coding-Assistenten** | Die drei Schritte selbst ausführen: die Befehle stehen unter [Von Hand](#von-hand). |
-| **Telefon oder Laptop, kein Coding-Assistent** | Nimm eine der [Community-Apps](https://cleanyour.tv/app): freie, quelloffene Apps auf Basis dieser TV-Listen, gebaut von unabhängigen Entwicklern. |
-
-Die drei Schritte unten sind für einen Coding-Assistenten geschrieben: der Computer muss im selben WLAN sein wie
-der Fernseher, mit einer Shell darauf. Ohne Assistenten ist [Von Hand](#von-hand) dieselbe Arbeit,
-von dir ausgeführt.
-
-Jedes davon geht: Claude Code (auf [0G Private Computer](https://pc.0g.ai/?utm_source=cleanyourtv&utm_medium=github&utm_campaign=readme) oder einem [Anthropic-Tarif](https://claude.com/pricing)), [Codex](https://github.com/openai/codex), [Gemini CLI](https://github.com/google-gemini/gemini-cli) oder [Antigravity CLI](https://antigravity.google/product/antigravity-cli).
-
-| Wo | Was zu tun ist |
-|---|---|
-| **1. Am Fernseher** | Einstellungen → Gerätepräferenzen → Info → siebenmal OK auf **Build** → zurück → Entwickleroptionen → **USB-Debugging** ein. Wenn ein Schalter für Netzwerk- oder ADB-Debugging da ist, den auch einschalten. Den Fernseher eingeschaltet lassen. |
-| **2. Am Computer** | Klone das Repo und öffne den Ordner im Assistenten (`git clone https://github.com/Gathin23/cleanyourtv`), danach [`PROMPT.md`](PROMPT.md) einfügen und das TV-Modell eintragen. |
-| **3. Mitgehen** | „USB-Debugging zulassen?“ am Fernseher bestätigen, dann die Checkliste beantworten: welche Apps du nutzt, die Dock-Größe und die App-Reihenfolge, ob Sprachassistent, Chromecast und Updates bleiben sollen. |
-
-Klonen zählt: der Assistent verwendet `tools/disable.sh` und `launcher/build-and-install.sh` aus diesem Repo,
-statt eigene Skripte zu schreiben. Dort liegen die Sicherung, die Home-Sicherung und der Wiederherstellungs-Eintrag.
-
-Der Assistent sichert, räumt auf, baut und installiert den Launcher und prüft jeden Schritt mit
-Screenshots vom Fernseher. Mit diesem Repo als Kontext dauert das etwa fünfzehn Minuten.
-
-## Was du bekommst
-
-Einen Startbildschirm, der wie ein Apple TV aussieht und sich zurückhält:
-
-| Teil | So sieht es aus |
-|---|---|
-| **Ein tiefschwarzes Home** | Ein Dock mit deinen vier Lieblings-Apps in einem abgerundeten Band, dort, wo Apple TV es hinlegt. |
-| **Ein Top-Regal** | Nennt die fokussierte App in großer Schrift, mit einem Umgebungsleuchten in einer Farbe aus ihrem Bild. |
-| **Die übrigen Apps in einem Raster** | Schiebt sich nach oben, wenn du Unten drückst. |
-| **Eine schwebende Glas-Markierung** | Springt von Kachel zu Kachel. Die fokussierte Kachel hebt sich und zeigt ihren Namen. |
-| **Drei mattierte Knöpfe** | Eingänge (HDMI-Anschlüsse unter den Namen aus den TV-Einstellungen, AV, Live-TV), WLAN oder Ethernet mit dem Netzwerknamen, Einstellungen. |
-| **Eine Begrüßung, eine dünne Uhr und das Datum** | In [Outfit](https://fonts.google.com/specimen/Outfit), und ein passender Uhr-Bildschirmschoner. `show_stats` in der Config oder einem Theme setzt eine Zeile unter die Uhr: CPU, freier Speicher und freier Speicherplatz. Sie bleibt aus, bis du sie einschaltest, und aktualisiert sich nur, solange Home auf dem Bildschirm ist. |
-| **Themes und Modul-Karten** | Themes ändern Farben, Hintergrund, Dock und Spalten ohne neuen Build, und Modul-Karten lassen andere Apps eine Kachel einhängen, nur mit deinem Einverständnis. |
-
-Und ein Fernseher, der aufhört, gegen dich zu arbeiten: keine gesponserten Zeilen, kein „Entdecken“-Generve, keine Analytik,
-die nach Hause telefoniert, keine Apps, um die du nie gebeten hast.
-
-| | |
-|---|---|
-| ![Das Top-Regal nennt die fokussierte App über einem Leuchten in ihrer Farbe](docs/focus-2-up-netflix.png) | ![Das Eingänge-Menü: HDMI-Anschlüsse mit dem, was angeschlossen ist, AV und Live-TV](docs/inputs-menu.jpg) |
-| *Top-Regal und Umgebungsleuchten* | *Eingänge: HDMI mit Verbindungsstatus, AV, Live-TV* |
-| ![Das Raster mit der Glas-Markierung auf einer Kachel und ihrem Namen darunter](docs/focus-1-fancode.png) | ![Der Uhr-Bildschirmschoner: eine dünne Uhr, die über dem Leuchten wandert](docs/clock-screensaver.png) |
-| *Das Raster, eine Glas-Markierung, der Name der Kachel* | *Uhr-Bildschirmschoner, wandert, damit nichts einbrennt* |
-| ![Das Aurora-Theme: ein Hintergrund und getönte Pillen, ohne neuen Build aufgespielt](themes/aurora/screenshot.jpg) | ![Sechs Spalten und ein Dock mit sechs Apps aus der config.json eines Themes](themes/six-columns/screenshot.jpg) |
-| *Aurora-Theme, aufgespielt mit `tools/theme.sh`* | *Sechs Spalten und ein Dock mit sechs Apps, derselbe Launcher* |
-| ![Eine Kachel verschieben: OK gehalten, Verschieben gewählt, die Kachel ist angehoben und die anderen abgedunkelt](docs/tile-move.jpg) | ![Die App-Bibliothek: installierte Apps, ein Druck legt eine App wieder auf Home](docs/app-library.jpg) |
-| *OK auf einer Kachel halten, Verschieben: Pfeile tragen sie, Zurück legt sie ab* | *App-Bibliothek: ein Druck legt eine entfernte App wieder auf Home* |
-
-## Unterstützte Fernseher
-
-Alles, worauf **Android TV** oder **Google TV** läuft.
-
-| Plattform | Was funktioniert |
-|---|---|
-| **Android TV, Google TV** | Das Aufräumen und der Launcher. |
-| **Fire TV** | Nur die Aufräum-Hälfte, weil Fire OS Home keinem Launcher von Dritten überlässt. Auf der Fire TV Box von 2015 (Fire OS 5) scheitert auch diese Hälfte: jeder `pm`-Weg wird abgelehnt. |
-| **Einige TCL-Geräte für den chinesischen Markt** | Sie verweigern jede Launcher-Installation; ihre Listen sagen das in der Kopfzeile. |
-| **Samsung (Tizen), LG (webOS), Roku, Vizio, Hisense VIDAA** | Nicht unterstützt (kein ADB). Schalte stattdessen das Tracking aus: [cleanyour.tv/not-android](https://cleanyour.tv/not-android). Vier webOS-Portierungen stehen in [SHOWCASE.md](SHOWCASE.md#other-platforms-fire-tv-and-lg-webos), und [docs/devices/samsung-tizen.md](docs/devices/samsung-tizen.md) beschreibt, was ein Samsung von 2021 über WLAN antwortet (kein ADB, also kein `pm disable-user`), wenn du eine Tizen-Portierung abwägst. |
-
-Getestete Listen von Mitwirkenden, ein Ordner pro Modell in [`examples/`](examples/). Die Marken mit den
-meisten Listen, jede mit ihren Modellen auf der Website verlinkt:
-
-<!-- tv-brands:start: generated by tools/gen_tables.py from examples/*/tv.json; edit those, not this -->
-
-| | | | | | |
-|---|---|---|---|---|---|
-| [TCL](https://cleanyour.tv/tvs?q=TCL) · 83 | [Sony](https://cleanyour.tv/tvs?q=Sony) · 49 | [Xiaomi](https://cleanyour.tv/tvs?q=Xiaomi) · 43 | [Philips](https://cleanyour.tv/tvs?q=Philips) · 23 | [Skyworth](https://cleanyour.tv/tvs?q=Skyworth) · 17 | [Hisense](https://cleanyour.tv/tvs?q=Hisense) · 16 |
-| [SHARP](https://cleanyour.tv/tvs?q=SHARP) · 10 | [Amazon Fire TV](https://cleanyour.tv/tvs?q=Amazon%20Fire%20TV) · 9 | [Panasonic](https://cleanyour.tv/tvs?q=Panasonic) · 7 | [BenQ](https://cleanyour.tv/tvs?q=BenQ) · 6 | [Haier](https://cleanyour.tv/tvs?q=Haier) · 6 | [JVC](https://cleanyour.tv/tvs?q=JVC) · 6 |
-| [Toshiba](https://cleanyour.tv/tvs?q=Toshiba) · 6 | [Acer](https://cleanyour.tv/tvs?q=Acer) · 4 | [Formovie](https://cleanyour.tv/tvs?q=Formovie) · 4 | [Nokia](https://cleanyour.tv/tvs?q=Nokia) · 4 | [OnePlus](https://cleanyour.tv/tvs?q=OnePlus) · 4 | [Thomson](https://cleanyour.tv/tvs?q=Thomson) · 4 |
-| [Artel](https://cleanyour.tv/tvs?q=Artel) · 3 | [FFalcon](https://cleanyour.tv/tvs?q=FFalcon) · 3 | [Google](https://cleanyour.tv/tvs?q=Google) · 3 | [Grundig](https://cleanyour.tv/tvs?q=Grundig) · 3 | [Motorola](https://cleanyour.tv/tvs?q=Motorola) · 3 | [Noblex](https://cleanyour.tv/tvs?q=Noblex) · 3 |
-| [NVIDIA Shield](https://cleanyour.tv/tvs?q=NVIDIA%20Shield) · 3 | [onn](https://cleanyour.tv/tvs?q=onn) · 3 | [RCA](https://cleanyour.tv/tvs?q=RCA) · 3 | [Redmi](https://cleanyour.tv/tvs?q=Redmi) · 3 | [RockTek](https://cleanyour.tv/tvs?q=RockTek) · 3 | [Vu](https://cleanyour.tv/tvs?q=Vu) · 3 |
-
-<details>
-<summary>+78 more brands and 14 projector brands</summary>
-
-**Challenger** 2 · **CHiQ** 2 · **EKO** 2 · **Hitachi** 2 · **Insignia Fire TV** 2 · **Kalley** 2 · **Kogan** 2 ·
-**Master-G** 2 · **PRISM+** 2 · **Sankey** 2 · **Sber** 2 · **Síragon** 2 · **TIM** 2 · **Vidda** 2 ·
-AiPro2K · AiPro4K · AIWA · AQUA · ASUS · Beko · Bell Canada · BGH · Caxium · Cecotec · Compac · Dcolor · DEXP · Dialog ·
-Durabrand · DYON · Essentiel b · Freebox · HAAM · Hikeen · Home+ · Impex · INCLO · Jio · Karbonn · Kodak · Koryo · KTC ·
-KUNFT · Liberton · Lumio · LYNCAST · Magyar Telekom · MarQ · MECOOL · MTC · Next · OK. · OPPO · Panavox · PEAQ ·
-Philco · Polytron · PPTV · Prosonic · Salora · SANYO · Seleco · Smarttech · STRONG · SunWind · Super General ·
-TD Systems · Tele System · Tesla · TiVo · Tornado · Turkcell · Tuvio · Verizon · VISIO · Vision · Vityas · X.Vision ·
-Alwtniet, Anker Nebula, BYINTEK, Chihi, Epson, Gadnic, HOTACK, HY320, JMGO, Magcubic, Portronics, Stellamore, Wanbo and XGIMI projectors
-
-</details>
-
-<!-- tv-brands:end -->
-
-**Deinen Fernseher finden:** suche auf [cleanyour.tv/tvs](https://cleanyour.tv/tvs) oder in der ganzen Tabelle in
-[examples/README.md](examples/README.md).
-
-Dein Fernseher fehlt? Der Prompt findet den Ballast selbst. Häng deine Liste danach an, dann überspringt die nächste
-Person mit deinem Modell diesen Schritt: [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## Von Hand
-
-Alles, was der Assistent tut, kannst du selbst ausführen. Die Werkzeuge brauchen Python 3 und sonst nichts.
-`tools/tv.py` spricht Netzwerk-ADB auf Port 5555. Bleibt dieser Port zu und der Fernseher bietet
-Wireless debugging mit einem Pairing-Code an (Chromecast mit Google TV und der Google TV Streamer
-tun das), paare ihn einmal mit dem mitgelieferten `adb` und führe zuerst `adb tcpip 5555` aus, wie
-[Fehlerbehebung](docs/TROUBLESHOOTING.md#connecting) beschreibt.
+Verwende unter Fire OS den sicheren Installer statt des generischen Android-TV-Übergabe-Skripts:
 
 ```bash
-python3 -m venv tools/venv && tools/venv/bin/pip install -r tools/requirements.txt
-export TV_HOST=192.168.1.50                                   # IP-Adresse deines Fernsehers
-
-tools/venv/bin/python -I tools/tv.py --probe                 # Modell, Android-Version, Firmware
-tools/venv/bin/python -I tools/tv.py 'pm list packages'      # ein Shell-Befehl auf dem Fernseher
-tools/disable.sh examples/xiaomi-mi-tv-4a/debloat.txt        # eine Debloat-Liste anwenden
-tools/restore.sh examples/xiaomi-mi-tv-4a/debloat.txt        # rückgängig, der Hersteller-Launcher ist wieder da
-tools/venv/bin/python -I tools/check.py examples/xiaomi-mi-tv-4a/debloat.txt   # was ein Firmware-Update zurückgeholt hat
-TV_HOST=192.168.1.50 launcher/build-and-install.sh           # Launcher bauen und zum Home machen
-tools/theme.sh themes/aurora                                 # ein Theme aufspielen; --reset nimmt es weg
+python3 -m venv tools/venv
+tools/venv/bin/pip install -r tools/requirements.txt
+TV_HOST=<fire-tv-ip> tools/venv/bin/python -I tools/install_apk.py \
+  launcher/app/build/outputs/apk/release/app-release.apk
 ```
 
-| Werkzeug | Was es tut |
+Alternativ kannst du die heruntergeladene APK mit einem Sideload-Werkzeug deiner Wahl installieren. Öffne den Launcher zunächst über die App-Übersicht des Fire TV. Amazon Home und die Einstellungen müssen erreichbar bleiben.
+
+## Schnellstart für diesen Fork
+
+| Schritt | Was zu tun ist |
 |---|---|
-| [`tools/tv.py`](tools/tv.py) | ADB-Client in reinem Python: Shell, Stapel, Push, Pull, Neustart und Screenshots, auf Wunsch zuerst mit Tasten der Fernbedienung. Funktioniert dort, wo die mitgelieferte `adb`-Datei blockiert ist. Optionales [gekoppeltes Google-ADB-Backend](tools/native-adb.md) für verschlüsseltes Wireless debugging. |
-| [`tools/b64push.py`](tools/b64push.py) | Lädt große Dateien wie APKs in Base64-Stücken hoch und prüft die Prüfsumme. |
-| [`tools/relay.py`](tools/relay.py) | Leitet einen lokalen Port an den ADB-Port des Fernsehers weiter, für Assistenten, deren Sandbox dein Netz nicht erreicht. Lauscht nur auf diesem Computer. [Anleitung](tools/relay.md). |
-| [`tools/disable.sh`](tools/disable.sh), [`restore.sh`](tools/restore.sh) | Eine Debloat-Liste anwenden oder zurücknehmen, die Rücknahme aus dem Zustand vor der Änderung. |
-| [`tools/recovery.py`](tools/recovery.py) | Schreibt den Eintrag, den `disable.sh` zum Rückgängigmachen braucht, und gibt den Wiederherstellungs-Stapel aus. |
-| [`tools/check.py`](tools/check.py) | Vergleicht den Fernseher mit der angewendeten Liste, für das, was ein Firmware-Update zurückgeholt hat; `--fix` setzt es zurück. |
-| [`tools/adb-closed.py`](tools/adb-closed.py) | Prüft, dass der Netzwerk-ADB-Port des Fernsehers zu ist, sobald Debugging aus ist: Ende 0, wenn der Fernseher die Verbindung ablehnt, 1, solange er noch offen ist, 2, wenn nichts geantwortet hat oder die Prüfung selbst nicht laufen konnte. Kein `nc` nötig. |
-| [`tools/privacy.py`](tools/privacy.py) | Prüft den Fernseher auf Kandidaten für Sprache, ACR und Telemetrie und gibt die Belege für jeden aus; `--write` macht aus den Funden eine Liste, die `disable.sh` und `restore.sh` schon verstehen. |
-| [`tools/theme.sh`](tools/theme.sh), [`theme_restart.py`](tools/theme_restart.py) | Spielt einen Ordner aus [`themes/`](themes/) auf den Launcher und startet Home neu. |
-| [`tools/manage.py`](tools/manage.py) | Listet jedes Add-on, jedes Theme und jeden Schalter mit Screenshot, zeigt, was auf dem Fernseher liegt, und installiert, aktualisiert oder entfernt eines über das eigene Skript seiner Autorin oder seines Autors. |
-| [`tools/bench.py`](tools/bench.py) | Misst den Launcher, der auf HOME antwortet: Tastenlatenz, wie weit der Fokus gewandert ist, ruckelige Frames, Kaltstart, Rückkehr zu Home, und die CPU und PSS im Leerlauf. Ändert nichts am Fernseher und schreibt die rohen Zahlen je Taste nach JSON; keine Extra-Installation. |
-| [`tools/trace.py`](tools/trace.py), [`trace_report.py`](tools/trace_report.py) | Nimmt Perfetto-Traces des Launchers auf (Rückkehr zu Home, Kaltstart, D-Pad) und berichtet, wohin die Zeit geht, je Lauf und vorher gegen nachher. Optional: braucht [`requirements-perf.txt`](tools/requirements-perf.txt). [Anleitung](tools/trace.md). |
-| [`tools/flamechart.py`](tools/flamechart.py) | Zeichnet aus diesen Traces ein Vorher/Nachher-Flammendiagramm für einen Pull Request: eine Spur je Thread auf gemeinsamer Zeitachse, die Arbeit, die eine Änderung trifft, in Magenta mit ihrer Summe. Optional, wie die Trace-Werkzeuge. [Anleitung](tools/flamechart.md). |
-| [`tools/screendiff.py`](tools/screendiff.py) | Vergleicht ein Vorher- und ein Nachher-Bild Pixel für Pixel, lässt die Uhr oder das aus, was du maskierst, und schreibt das Paar mit unkenntlich gemachtem WLAN-Namen. Optional, wie die Trace-Werkzeuge. [Anleitung](tools/screendiff.md). |
-| [`tools/race_calendar.py`](tools/race_calendar.py) | Schreibt den F1-Kalender dieser Saison in ein Theme für den Rennwochenend-Modus, aus der freien Jolpica-API. |
-| [`launcher/build-and-install.sh`](launcher/build-and-install.sh) | Baut ein geschrumpftes Release (etwa 572 KB), installiert es, schaltet Home um und rollt zurück, wenn Home nicht darauf landet. |
+| **1. Am Fire TV** | ADB-Debugging in den Entwickleroptionen einschalten. Das Gerät eingeschaltet lassen und seine IP-Adresse notieren. |
+| **2. Am Computer** | Diesen Fork klonen (`git clone https://github.com/mildman1848/cleanyourtv-fireos.git`), [`PROMPT.md`](PROMPT.md) lesen und anschließend [`docs/fireos.md`](docs/fireos.md) befolgen. |
+| **3. Zuerst installieren** | Den Launcher als normale App installieren. Beim Installieren weder Home-Redirect aktivieren noch Pakete deaktivieren. |
 
-Die Skripte lassen den Fernseher nie ohne Home-App: sie deaktivieren nur einen Hersteller-Launcher, den sie erkennen,
-und überspringen die Home-App in einer Liste, bis ein anderer Launcher auf HOME antwortet. Eigene Listen können außerhalb
-des Repositorys liegen: Listenpfade sind relativ zum Verzeichnis, aus dem du startest, und absolute Pfade gehen auch.
+Das Klonen ist wichtig: `tools/disable.sh`, `tools/install_apk.py` und `tools/home_redirect.py` aus diesem Fork enthalten die Fire-OS-Sicherungen. **`launcher/build-and-install.sh` nicht unter Fire OS ausführen** — das Skript ändert Home-/Bedienungshilfen-Einstellungen für andere Android-TV-Geräte.
 
-<details>
-<summary><b>Windows (PowerShell)</b></summary>
+Lies vor Änderungen an Geräteeinstellungen die [Fire-OS-Anleitung](docs/fireos.md) und den [Fire-OS-Testprompt](PROMPT.md). **Aktiviere den Home-Redirect nicht auf einem Gerät, das du nicht wiederherstellen kannst.** Eine erfolgreiche APK-Installation beweist nur, dass die APK installiert wurde — nicht, dass Home-Taste, Neustart oder Autostart funktionieren.
 
-Jedes Skript hat ein PowerShell-Gegenstück daneben. Unter Windows mit installiertem Android Studio braucht es
-sonst nichts:
+## Fire-OS-Unterstützung und Sicherheit
 
-```powershell
-python -m venv tools\venv; tools\venv\Scripts\python.exe -m pip install -r tools\requirements.txt
-powershell -ExecutionPolicy Bypass -File launcher\build-and-install.ps1 -TvHost 192.168.1.50
-powershell -ExecutionPolicy Bypass -File tools\disable.ps1 -TvHost 192.168.1.50 examples\xiaomi-mi-tv-4a\debloat.txt
-```
-
-</details>
-
-<details>
-<summary><b>Wie die Skripte Home schützen</b></summary>
-
-Die Installations-Skripte fragen den Fernseher, welcher Launcher Home besitzt, und deaktivieren nur einen, den sie erkennen, die vier
-in `KNOWN_STOCK_LAUNCHERS`: `com.google.android.tvlauncher`, `com.google.android.apps.tv.launcherx`,
-`com.google.android.leanbacklauncher` und Xiaomis `com.mitv.tvhome` (PatchWall). Übergib
-`STOCK_LAUNCHER=<package>` (`-StockLauncher`) zum Überschreiben, oder `none`, um ihn in Ruhe zu lassen.
-
-`tools/disable.sh` (`disable.ps1`) wendet dieselbe Regel an, bevor es irgendetwas deaktiviert:
-
-- Enthält die Liste die App, der Home gehört, und keine andere App auf dem Fernseher antwortet auf HOME, überspringt es diesen
-  Eintrag, sagt warum, und deaktiviert den Rest der Liste. Eine Liste, die vor der Launcher-Übergabe angewendet wird,
-  kann den Fernseher so nicht ohne etwas zum Starten lassen.
-- Der Einrichtungsassistent, die Einstellungs-Apps, ein `FallbackHome` des Herstellers und Werksprüf-Apps (Xiaomis
-  `com.duokan.factorytest`) antworten auch auf HOME und zählen nicht.
-- Auf Google TV behält es den Besitzer außerdem, solange setupwraith auf HOME antwortet und aktiviert bleibt (nicht in der Liste, oder
-  wegen des WLAN behalten): setupwraith antwortet vor einem installierten Launcher, der noch nicht Home ist,
-  und würde Home übernehmen.
-
-Dieselbe Liste noch einmal ausführen, sobald `launcher/build-and-install.sh` den neuen Launcher zu Home gemacht hat und der
-Eintrag angewendet wird; `FORCE_HOME=1` (`$env:FORCE_HOME`) deaktiviert ihn trotzdem.
-
-</details>
-
-## Das Mikrofon, und was sich dazu sagen lässt
-
-„Welches dieser Pakete hört zu?“ hat keine ehrliche Antwort in einer Zeile: ein Rechte-Scan zeigt fünfzig
-Systempakete mit `RECORD_AUDIO`, die nichts aufnehmen, und ACR-Clients sehen den Bildschirm ganz ohne Audio-
-Recht. [`tools/privacy.py`](tools/privacy.py) berichtet, was der Fernseher tatsächlich sagt, mit den
-Belegen für jeden Kandidaten zu Sprache, ACR und Telemetrie:
-`TV_HOST=192.168.1.50 tools/venv/bin/python -I tools/privacy.py`, und `--write` macht daraus eine normale
-Debloat-Liste. Was die Prüfung nicht kann, ist Absicht beweisen: [docs/privacy.md](docs/privacy.md) erklärt warum.
-
-## Der Launcher
-
-Ein kleiner nativer Startbildschirm für Android TV: **etwa 572 KB**, einfaches Java, gebaut für Fernseher mit 1 GB RAM.
-Kein Weichzeichnen, kein Video, keine Netzwerkberechtigung, keine Hintergrunddienste. Der **Fernseher** braucht Android 8.0 (API 26)
-oder neuer, das `minSdk` in [`launcher/app/build.gradle`](launcher/app/build.gradle); was auf einem älteren
-Gerät übrig bleibt, steht in der [Fehlerbehebung](docs/TROUBLESHOOTING.md).
-
-| Was | Wie es funktioniert |
+| Bereich | Stand |
 |---|---|
-| **Einrichten** | Dock-Reihenfolge, versteckte Apps, Live-TV-App, 4 bis 7 Kacheln je Zeile, reduzierte Bewegung. Alles in [`config.xml`](launcher/app/src/main/res/values/config.xml) |
-| **Einstellungen am Fernseher** | OK auf Einstellungen halten für die Launcher-Einstellungen. Ein optionales `launcher_settings_button` lässt einen normalen Klick sie direkt öffnen; die TV-Einstellungen bleiben auf der Einstellungsseite und ihrer App-Kachel. |
-| **Themes** | Hintergrund, Wallpaper und Layout aus einer `config.json`, über WLAN aufgespielt, ohne neuen Build. Achtundzwanzig liegen in [`themes/`](themes/), das eingebaute `default/` mitgerechnet |
-| **31 Sprachen** | Folgt der Sprache des Fernsehers, mit vollständig gespiegeltem Layout von rechts nach links für Hebräisch |
-| **App-Bibliothek** | Optional: jede installierte App durchsehen und Home-Verknüpfungen hinzufügen oder entfernen. Siehe [die Anleitung zur App-Bibliothek](docs/app-library.md) |
-| **Kachelmenü** | Standardmäßig an (`tile_menu`): OK auf einer Kachel halten für Verschieben und App-Info, mit eingeschalteter App-Bibliothek auch Von Home entfernen. Aus: OK halten öffnet App-Info |
-| **Modul-Karten** | Jede TV-App kann eine eigene Kachel anbieten; du stimmst jeder einmal zu. Siehe [`docs/modules.md`](docs/modules.md) |
-| **Add-ons** | Optionale Apps, die sich als Modul-Karten einhängen, liegen in [`addons/`](addons/) und werden nie in den Launcher gebaut |
-| **Uhr-Bildschirmschoner** | Eine wandernde Uhr über dem Leuchten, damit nichts einbrennt |
-| **Tasten der Fernbedienung** | Hält die Tasten für Eingang, YouTube und das Zahnrad am Laufen, nachdem der Hersteller-Launcher weg ist |
+| Launcher als normale App installieren | Öffentliches, mit Debug-Schlüssel signiertes Test-APK; die Installation wurde von einem Tester bestätigt. |
+| Pakete deaktivieren/wiederherstellen | Fire-OS-Pakete sind geschützt. Nutze nur eine geprüfte Liste für genau dein Modell; eine neue Amazon-Bereinigungsliste wird hier nicht behauptet. |
+| Amazon Home, Einstellungen und Quick Settings | Geschützt; im Rahmen dieses Forks niemals deaktivieren oder deinstallieren. |
+| Home-Tasten-Redirect | Optional, standardmäßig aus, auf dem Zielgerät nicht verifiziert. Einen Rückweg bereithalten. |
+| Launcher bei Boot/Wake starten | In diesem Fork weder implementiert noch verifiziert. |
+| Fire OS 5 (Fire TV Box von 2015) | `pm disable-user` wird auf dem gemeldeten Gerät verweigert; keine unterstützte Debloat-Zielplattform. |
+| Android TV / Google TV | Dafür den Upstream CleanYourTV verwenden. Dokumentation und Tests dieses Forks zielen auf Fire OS. |
 
-Themes, Schalter und Add-ons zusammen, mit Bildern: [cleanyour.tv/addons](https://cleanyour.tv/addons).
+Fire OS unterscheidet sich je nach Modell und Firmware. Der Home-Redirect, die physische Home-Taste der Fernbedienung und die Wiederherstellung nach einem Neustart wurden nicht auf jedem Fire-TV-Modell getestet. Kompatibilitätsaussagen müssen das konkret getestete Modell und die Fire-OS-Version nennen.
 
-**Mehr:** [docs/launcher.md](docs/launcher.md) hat die Einstellungsseite des Launchers Zeile für Zeile, den Wechsel des
-Standard-Home, die Sprachen, die Tasten der Fernbedienung, den Uhr-Bildschirmschoner, die Navigation und den eigenen Build.
+### Autostart
 
-## Fernseher wiederherstellen
+Dieser Fork hat keinen eingebauten, verifizierten Autostart. Der Launcher allein garantiert nicht, dass Fire OS ihn nach Neustart oder Aufwachen startet. Der optionale Home-Redirect ist kein Boot-Autostart. Ein separates Drittanbieter-Programm wie [Home on Fire](https://github.com/toolicious/home-on-fire) gibt an, eine Startfunktion beim Booten zu haben, steht aber unter GPL-3.0 und ist **nicht Teil oder Bestandteil des Supports dieses Repositories**. Kompatibilität und Wiederherstellung müssen auf dem konkreten Gerät geprüft werden.
 
-Behalte die Liste, die du angewendet hast. Eine Zeile setzt den Fernseher zurück, wie er war:
+## Add-ons
 
-```bash
-TV_HOST=192.168.1.50 tools/restore.sh examples/<your tv>/debloat.txt                                    # Android TV
-TV_HOST=192.168.1.50 tools/restore.sh examples/<your tv>/debloat.txt com.google.android.apps.tv.launcherx  # Google TV
-```
+Die folgenden Zusatz-Apps sind getrennte Anwendungen und keine in den Launcher eingebauten Funktionen:
 
-| Was | Wie |
-|---|---|
-| **Zuerst ein Eintrag** | Bevor `tools/disable.sh` etwas ändert, schreibt es auf, wie der Fernseher aussah, in `~/.cleanyourtv/`. |
-| **Wiederherstellen spielt ihn ab** | Ein Paket, das du selbst deaktiviert hattest, bleibt deaktiviert, und Home geht zurück zu der Komponente, der es gehörte. |
-| **Der Launcher bleibt installiert** | Nimm ihn unter Einstellungen → Apps des Fernsehers weg, wenn er weg soll. |
-| **Kein Computer?** | Ist der Fernseher nicht erreichbar, kann seine eigene Seite Einstellungen → Apps Pakete auch wieder aktivieren. |
-
-**Mehr:** [docs/restore.md](docs/restore.md) beschreibt, was der Eintrag enthält, wann das Argument für den Hersteller-Launcher
-zählt, und was ohne Eintrag passiert.
-
-## Nach einem Firmware-Update
-
-Ein Update installiert sich über das aufgeräumte System: die gelisteten Pakete kommen zurück, Home geht an den
-Hersteller-Launcher, und neue Vorinstallationen erscheinen, die keine Liste nennt. Öffne ADB wieder wie in
-[Schnellstart](#schnellstart) Schritt 1, dann vergleiche den Fernseher mit der Liste, die du angewendet hast; `--fix` setzt sie zurück:
-
-```bash
-TV_HOST=192.168.1.50 tools/venv/bin/python -I tools/check.py examples/<your tv>/debloat.txt
-```
-
-**Mehr:** [docs/firmware-updates.md](docs/firmware-updates.md) hat die Exit-Codes, eine wöchentliche Prüfung, was
-`--fix` ändert, Fernseher, die den Hersteller-Launcher als Home behalten, und Listen, die den Updater deaktivieren.
-
-## Wenn etwas schiefgeht
-
-Die ganze Liste dessen, was uns gebissen hat, steht in [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md). Die
-drei, auf die es am meisten ankommt:
-
-- 🍎 **macOS blockiert `adb connect`** („No route to host“) unter der Privatsphäre des lokalen Netzes. `tools/tv.py` umgeht die Datei.
-- ⚠️ **Den Hersteller-Launcher erst deaktivieren, wenn der neue installiert ist und läuft**, sonst landet Home auf einer Werksprüf-App. Das Installations-Skript ordnet das für dich.
-- 🔁 **Auf Google TV kann der Einrichtungsassistent** (`com.google.android.tungsten.setupwraith`) Home übernehmen und das System in eine Absturzschleife schicken, nachdem der Hersteller-Launcher deaktiviert ist. Deaktiviere ihn auch, und nimm ihn in deine `debloat.txt` auf, damit die Wiederherstellung ihn zurückbringt.
-  - Prüfe aber zuerst `dumpsys wifi | grep -o 'cname=[^ ]*'`: wurde das WLAN während der Einrichtung gespeichert, gehört es setupwraith, und das Deaktivieren löscht das Netz (tritt ihm zuerst in den Einstellungen wieder bei; `tools/disable.sh` überspringt setupwraith, bis du das tust).
-  - Auf Googles eigenem Chromecast und auf dem Google TV Streamer kostet das auch das Casten vom Telefon, siehe [Fehlerbehebung](docs/TROUBLESHOOTING.md).
-  - Schon festgefahren? `tools/tv.py 'pm enable --user 0 com.google.android.apps.tv.launcherx'`.
-
-## Häufige Fragen
-
-<details>
-<summary><b>Ich programmiere nicht und habe keinen Laptop. Geht das trotzdem?</b></summary>
-
-Ja. Unabhängige Entwickler haben freie, quelloffene Apps auf Basis der CleanYourTV-Listen gebaut, die das Aufräumen
-über WLAN erledigen, ganz ohne Coding-Agent. Jede zeigt zuerst einen Plan, schaltet Apps nur aus und kann alles zurücksetzen:
-
-| App | Für | Von |
+| Add-on | Deutsche Übersetzung | APK-Status |
 |---|---|---|
-| [Clean Your TV app](https://github.com/udhaykumarbala/cleanyourtv-app) | Android-Telefon | [@udhaykumarbala](https://github.com/udhaykumarbala) |
-| [Tellyscope](https://github.com/man15h/tellyscope) | Android-Telefon | [@man15h](https://github.com/man15h) |
-| [TidyTV](https://github.com/jolan94/tidytv) | Android-Telefon, Google Play | [@jolan94](https://github.com/jolan94) |
-| [CleanMyTV](https://github.com/wingedpanther/cleanmytv) | Mac und Windows | [@wingedpanther](https://github.com/wingedpanther) |
+| [TV Hub](addons/tv-hub/) | Deutsche Ressourcen geprüft | [Debug-signiertes Test-APK](https://github.com/mildman1848/cleanyourtv-fireos/releases/tag/fireos-addons-test-2026-11-07) |
+| [Sources](addons/sources/) | Deutsche Ressourcen enthalten | [Debug-signiertes Test-APK](https://github.com/mildman1848/cleanyourtv-fireos/releases/tag/fireos-addons-test-2026-11-07) |
+| [Open on wake](addons/wake-app/) | Deutsche Ressourcen enthalten | [Debug-signiertes Test-APK](https://github.com/mildman1848/cleanyourtv-fireos/releases/tag/fireos-addons-test-2026-11-07) |
 
-Diese Apps sind unabhängige Projekte, weder mit CleanYourTV oder seinem Maintainer verbunden noch von ihnen empfohlen,
-und jede wird so, wie sie ist, unter ihrer eigenen Lizenz bereitgestellt. Probleme mit einer App bitte im Repo dieser App
-melden. Mehr unter [cleanyour.tv/app](https://cleanyour.tv/app).
+Die Release-Notizen nennen jede APK, ihre Version, Build- und Signaturstatus sowie die SHA-256-Prüfsumme. Installiere keinen Branch-Build, als wäre er ein veröffentlichtes Release.
 
-</details>
+## Aus dem Quellcode bauen
 
-<details>
-<summary><b>Ist das sicher? Kann es den Fernseher unbrauchbar machen?</b></summary>
+Voraussetzungen: JDK 17 und Android-SDK-Plattform 34 mit passenden Build Tools. Beispiel für den Launcher:
 
-Nichts wird geflasht, gerootet oder gelöscht; Pakete werden im
-Benutzerprofil deaktiviert. Das Risiko ist, etwas zu deaktivieren, worauf der Fernseher sich stützt. Deshalb werden Listen
-in kleinen Stapeln angewendet, mit einem Wiederherstellungs-Skript in Bereitschaft. Die eigene Seite Einstellungen → Apps des Fernsehers kann
-Pakete auch ohne die Werkzeuge wieder aktivieren. Startet der Fernseher nicht mehr weit genug dafür, ist ein Werks-
-reset aus seinem Wiederherstellungsmenü meist der Weg zurück.
+```bash
+cd launcher
+./gradlew --no-daemon testReleaseUnitTest lintRelease assembleRelease
+```
 
-Mehr: [docs/faq.md](docs/faq.md#is-this-safe-can-it-brick-the-tv)
+Die APK liegt danach unter `launcher/app/build/outputs/apk/release/app-release.apk`. Jedes Add-on hat ein eigenes Gradle-Projekt unter `addons/` und muss separat gebaut und geprüft werden. Ein erfolgreicher Launcher-Build sagt nichts über Add-on-Builds oder Laufzeit-Kompatibilität mit Fire TV aus.
 
-</details>
+## Verhältnis zum Upstream
 
-<details>
-<summary><b>Was ist mit Firmware-Updates?</b></summary>
-
-Der Updater bleibt in den meisten Listen an, Firmware-Updates kommen also wie gewohnt. Manche Listen deaktivieren den
-eigenen Updater des Fernsehers, und dort kommt ein Firmware-Update erst, wenn du ihn wieder aktivierst. Wenn eines
-landet, installiert es sich über das aufgeräumte System, ein Paket kommt zurück und du führst das Skript erneut aus: siehe
-[Nach einem Firmware-Update](#nach-einem-firmware-update).
-
-</details>
-
-<details>
-<summary><b>Gehen die Apps dann kaputt?</b></summary>
-
-Streaming-Apps aktualisieren sich weiter über den Play Store, der in Ruhe gelassen wird.
-Der Launcher listet nur, was installiert ist, und startet es mit Intents, die seit einem Jahrzehnt stabil sind.
-
-</details>
-
-<details>
-<summary><b>Kann ich das für jemanden in einem anderen Haushalt machen?</b></summary>
-
-Ja, über eine private [Tailscale](https://tailscale.com)-
-Verbindung statt über dasselbe WLAN: entweder Tailscale auf deren Fernseher, mit dir geteilt, oder ein Computer oder Apple
-TV bei ihnen, der dorthin leitet. Nie, indem der ADB-Port an ihrem Router geöffnet wird. Schritt für Schritt in
-[docs/REMOTE.md](docs/REMOTE.md).
-
-</details>
-
-<details>
-<summary><b>Ist ADB-Zugriff nicht ein Sicherheitsloch?</b></summary>
-
-Es ist ein ausdrückliches Tippen auf „diesen Computer zulassen“ am Fernseher,
-dasselbe wie beim Entwickeln einer Android-App. Netzwerk-ADB ist Klartext auf Port 5555, und auf mancher Firmware bekommt jedes
-Gerät im LAN eine Shell, also schließe es, wenn du fertig bist:
-
-1. Am Fernseher: Entwickleroptionen → **USB-Debugging**, **Netzwerk-/ADB-Debugging** und
-   **Wireless debugging** aus, je nachdem, was der Fernseher hat, und die USB-Debugging-Berechtigungen widerrufen.
-2. Den Fernseher neu starten, dann vom Computer aus bestätigen, dass der Port weg ist:
-   `python3 tools/adb-closed.py <tv ip>` muss sagen, dass der Port geschlossen ist.
-
-Der Launcher arbeitet weiter ohne Debugging. Mehr, einschließlich der Prüfung des eigenen Ports von Wireless debugging:
-[docs/faq.md](docs/faq.md#isnt-adb-access-a-security-hole)
-
-</details>
-
-<details>
-<summary><b>Kann es Werbung auch in Apps blockieren?</b></summary>
-
-Teilweise, mit Androids privatem DNS (Android 9 und neuer). Zeige
-es auf einen werbeblockierenden Resolver wie [AdGuard DNS](https://adguard-dns.io), dann lösen die Werbe- und
-Tracker-Domains jeder App nicht mehr auf, systemweit, und das übersteht Neustarts. Der Preis: dieser Resolver sieht
-dann jede DNS-Anfrage, die der Fernseher macht, und YouTube-Werbung nimmt er nicht weg.
-
-Mehr, mit den beiden Befehlen und dem Zurückschalten: [docs/faq.md](docs/faq.md#can-it-block-ads-inside-apps-too)
-
-</details>
-
-<details>
-<summary><b>Gibt es Schalter in den eigenen Einstellungen des Fernsehers, die sich auch lohnen?</b></summary>
-
-Ein paar, und sie brauchen kein ADB: die Werbe-ID, Standort, Nutzung und Diagnose und Immer
-verfügbares Scannen, plus den Nur-Apps-Modus, wo der Hersteller-Launcher bleibt. Schalte Nutzung und Diagnose vor dem
-Aufräumen um; auf manchen Fernsehern geht diese Seite mit.
-
-Mehr, mit den Pfaden für Google TV, Android TV und Fire OS:
-[docs/faq.md](docs/faq.md#are-there-switches-in-the-tvs-own-settings-worth-flipping-too)
-
-</details>
-
-<details>
-<summary><b>AirPlay?</b></summary>
-
-Nicht aus diesem Repo. Chromecast built-in bleibt für Android-Telefone. Für iPhones
-funktioniert [jqssun/android-airplay-server](https://github.com/jqssun/android-airplay-server); ein Installations-
-Skript dafür liegt in [PR #84](https://github.com/Gathin23/cleanyourtv/pull/84).
-
-</details>
-
-<details>
-<summary><b>Kann ich einfach die APK herunterladen?</b></summary>
-
-Baue sie mit dem Einzeiler; das dauert eine Minute und du
-bestimmst, was auf deinen Fernseher kommt. Keine vorgebauten Binärdateien.
-
-</details>
-
-## Die Geschichte
-
-Am 17. Oktober 2026 habe ich [ein Vorher und Nachher](https://x.com/gathint/status/2111379569030939102) des
-Fernsehers meiner Eltern gepostet, aufgeräumt von Claude Code über WLAN. Es erreichte 8,6 Millionen Aufrufe, Leute haben dasselbe mit
-ihren eigenen Fernsehern gemacht, und ihre Antworten wurden zu den Listen hier: über 170 TV-Modelle von über 200 Mitwirkenden in den
-ersten vier Tagen. Das Repo hieß bis zum 19. tv-vibehack; alte Links funktionieren.
-
-Zwei Wochen später war es das Repository auf Platz 1 der GitHub-Trends in der Woche vom 19. bis 25. Oktober, mit über 46.000 Sternen
-und 5.700 Forks sowie 1,4 Millionen Aufrufen und 260.000 Klonen in 14 Tagen. Die Listen umfassen jetzt 456 TV-Modelle von 122 Marken.
-Die Berichterstattung: 412 Artikel aus 54 Ländern und 229 Videos auf YouTube und Bilibili, alle in [docs/PRESS.md](docs/PRESS.md) (Stand: 31. Oktober 2026).
-
-## Mitmachen
-
-Der nützlichste Beitrag ist die Debloat-Liste deines Fernsehers, damit die nächste Person mit diesem Modell
-sie nicht neu entdecken muss. [CONTRIBUTING.md](CONTRIBUTING.md) hat das Format und die Prüfung, um die wir bitten.
-Du arbeitest über einen Coding-Agenten mit? [AGENTS.md](AGENTS.md) gibt ihm dieselben Regeln.
-
-| Wie helfen | Was das heißt |
+| Quelle | Rolle in diesem Fork |
 |---|---|
-| **Die Debloat-Liste deines Fernsehers** | Die nützlichste: die nächste Person mit diesem Modell überspringt das Entdecken. |
-| **Launcher und Prompt** | Verbesserungen am Launcher und schärfere Prompt-Formulierungen sind auch willkommen. |
-| **Etwas darauf gebaut?** | Ein Launcher, eine Portierung, ein Theme: trag es in [SHOWCASE.md](SHOWCASE.md) ein, wo schon hundertvierundvierzig Projekte leben, sortiert in Startbildschirme, Forks, Add-ons, Werkzeuge und andere Plattformen, mit einem Index nach TV-Marke. |
+| [Gathin23/CleanYourTV](https://github.com/Gathin23/cleanyourtv), Basis-Commit `d451b175` | Launcher, Kernwerkzeuge und Projektstruktur. |
+| [Clean Your TV app](https://github.com/udhaykumarbala/cleanyourtv-app), Commit `03ad20ebec68284a362b9d90690876c18e212286` | Referenz für Fire-OS-Erkennung und geschützte Pakete. Die Smartphone-App selbst ist nicht Teil dieses Forks. |
+| [fire-tv-cleanup](https://github.com/itsmeterrylin/fire-tv-cleanup), Commit `ab4d9bfbc51e48316d0a19583d579de0b3f44215` | Referenz für das Konzept des optionalen Home-Redirects. |
 
-Die Menschen, deren Arbeit in diesem Repo steckt:
+Ausführliche Quellenhinweise, Einschränkungen und Wiederherstellungsschritte stehen in [`docs/fireos.md`](docs/fireos.md). Dies ist ein unabhängiger Community-Fork, weder mit Amazon noch mit dem CleanYourTV-Upstream-Maintainer verbunden oder von ihnen empfohlen.
 
-<a href="https://github.com/Gathin23/cleanyourtv/graphs/contributors"><img src="https://contrib.rocks/image?repo=Gathin23/cleanyourtv&columns=16&max=400" alt="Mitwirkende"></a>
+## Mitwirken
+
+Beiträge sollten den konkreten Fire-OS-Einsatz verbessern: Geräte- und Firmware-Prüfungen, sichere Installation, Übersetzungen, Add-on-Paketierung und reproduzierbare Wiederherstellung. Bitte nenne bei geräteabhängigen Aussagen das genaue Fire-TV-Modell und die Fire-OS-Version. Keine Befehle hinzufügen, die Amazon Home/Einstellungen deaktivieren, undokumentierte Secure Settings schreiben oder Bedienungshilfen unbemerkt aktivieren.
 
 <details>
-<summary><strong>Stern-Verlauf</strong></summary>
+<summary><b>Ist ADB-Zugriff nicht ein Sicherheitsrisiko?</b></summary>
 
-<a href="https://star-history.com/#Gathin23/cleanyourtv&Date"><img src="https://api.star-history.com/svg?repos=Gathin23/cleanyourtv&type=Date" alt="Diagramm des Stern-Verlaufs" width="640"></a>
+Netzwerk-ADB ermöglicht weitreichenden Shell-Zugriff. Lass Debugging nur eingeschaltet, solange du es brauchst, und mache ADB niemals aus dem öffentlichen Internet erreichbar.
+
+1. Am Fernseher **USB-Debugging**, **Netzwerk-/ADB-Debugging** und **Wireless debugging** ausschalten (je nachdem, was vorhanden ist) und Debugging-Berechtigungen widerrufen. Wireless debugging kann einen eigenen Port verwenden; siehe [die vollständige Abschalt-Anleitung](docs/faq.md#isnt-adb-access-a-security-hole).
+2. Den Fernseher neu starten und dann `python3 tools/adb-closed.py <tv ip>` ausführen. Das Werkzeug muss melden, dass Port 5555 geschlossen ist.
+
+Die vollständigen Schritte erklären auch die Prüfung des separaten Wireless-Debugging-Ports: [docs/faq.md](docs/faq.md#isnt-adb-access-a-security-hole).
 
 </details>
-
-## Kontakt
-
-| Wofür | Wohin |
-|---|---|
-| **Fragen zu deinem Fernseher** | [GitHub Discussions](https://github.com/Gathin23/cleanyourtv/discussions) |
-| **Presse und Anfragen** | [hello@itsgathin.com](mailto:hello@itsgathin.com) |
-| **Sicherheitslücken** | Privat über den [Security-Tab](https://github.com/Gathin23/cleanyourtv/security) melden, siehe [`SECURITY.md`](SECURITY.md) |
-
-## Rechtliches
-
-- CleanYourTV ist ein unabhängiges Open-Source-Projekt. Es ist mit keinem Fernseher-Hersteller oder keiner Plattform verbunden, von ihnen unterstützt
-  oder gesponsert. Marken- und Modellnamen stehen nur dafür, auf welchem Fernseher eine Liste getestet wurde,
-  und bleiben die Marken ihrer Inhaber.
-- Es arbeitet nur über Einstellungen, die der Fernseher seiner Besitzerin oder seinem Besitzer selbst anbietet: Entwickleroptionen, ADB-Debugging und
-  Androids eigenes `pm disable-user`, derselbe Schalter wie Einstellungen > Apps > Deaktivieren. Es rootet den Fernseher nicht,
-  flasht keine Firmware und umgeht keine Sperre, kein DRM und keinen Kopierschutz, und das Repo enthält keine Hersteller-
-  software, Firmware oder APKs.
-- Nichts wird deinstalliert, und `tools/restore.sh` setzt alles zurück. Du führst es auf einem Fernseher aus, der dir gehört, auf
-  eigenes Risiko, und eine Änderung an der Software eines Fernsehers kann Garantie oder Support berühren.
-- Alles hier wird so bereitgestellt, wie es ist, ohne Gewährleistung irgendeiner Art, unter der MIT-Lizenz unten.
 
 ## Lizenz
 
-MIT, siehe [`LICENSE`](LICENSE). Die Schrift Outfit steht unter der SIL Open Font License, siehe
-`launcher/FONT-LICENSE-OFL.txt`.
+MIT, siehe [`LICENSE`](LICENSE). Die Schrift Outfit bleibt unter der SIL Open Font License; siehe [`launcher/FONT-LICENSE-OFL.txt`](launcher/FONT-LICENSE-OFL.txt).

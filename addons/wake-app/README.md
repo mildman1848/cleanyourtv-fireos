@@ -3,7 +3,7 @@
 Opens the app you choose every time the screen turns on, so the TV wakes straight into YouTube, your live
 TV app or whatever you watch first, instead of the home screen. Separate from the launcher.
 
-Package `io.github.luyzfernando08.wakeapp`. You see it as **Open on wake** (Portuguese: **Abrir ao ligar**).
+Package `io.github.luyzfernando08.wakeapp`. You see it as **Open on wake** (Portuguese: **Abrir ao ligar**, German: **Beim Einschalten öffnen**).
 On cleanyourtv's Home it is also a module card, **Open on wake**, which opens its settings.
 
 ## Settings
@@ -92,3 +92,7 @@ Then press Home and answer **Show card** if you want the card; Keep hidden leave
   channel.
 - Philco Smart TV by Skyworth (sunnyvale, MediaTek, Android TV 14), launcher 3.1: opening tinyCam by itself on
   waking from standby, and not opening it with the overlay grant revoked (see Permissions). Not tried on a TCL set.
+
+## Deutsch
+
+Die App heißt auf Deutsch **Beim Einschalten öffnen** und öffnet die gewählte App, sobald sich der Bildschirm einschaltet. Alle Einstellungen, die Appauswahl und die Hinweise erscheinen auf Deutsch, wenn der Fernseher auf Deutsch eingestellt ist (`app/src/main/res/values-de/strings.xml`). Der Kartentitel für den CleanYourTV-Launcher bleibt „Open on wake“ (nicht übersetzbar). Sie öffnet nie einen Startbildschirm (Launcher) und ist **kein** Ersatz für einen Start des CleanYourTV-Launchers beim Hochfahren; siehe [docs/fireos.md](../../docs/fireos.md).

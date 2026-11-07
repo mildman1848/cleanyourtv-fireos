@@ -255,12 +255,12 @@ class TheDocsTest(unittest.TestCase):
         self.assertNotIn("or does not answer", doc)
 
     def test_the_readme_row_gives_exit_0_for_a_refusal_only(self):
-        rows = [line for line in README.read_text(encoding="utf-8").splitlines()
-                if line.startswith("| [`tools/adb-closed.py`]")]
-        self.assertEqual(len(rows), 1, "the README's Tools row for adb-closed.py moved")
-        self.assertIn("exits 0 when the TV refuses the connection", rows[0])
-        self.assertIn("2 when nothing answered or the check itself could not run", rows[0])
-        self.assertNotIn("nothing answers", rows[0])
+        # The Fire OS front page has no Tools table; it still tells the reader to run the check, and the
+        # exit codes are held by the script's docstring (test above).
+        text = README.read_text(encoding="utf-8")
+        self.assertFalse([l for l in text.splitlines() if l.startswith("| [`tools/adb-closed.py`]")])
+        self.assertIn("tools/adb-closed.py <tv ip>", text)
+        self.assertIn("must say the port is closed", text)
 
     def test_the_relay_guide_sends_the_closing_check_to_an_ordinary_terminal(self):
         guide = " ".join((ROOT / "tools" / "relay.md").read_text(encoding="utf-8").split())

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Quellen</string>
+    <string name="state_nothing">nichts angeschlossen</string>
+    <string name="state_standby">angeschlossen, im Standby</string>
+    <string name="state_connected">angeschlossen</string>
+    <string name="live_tv">Live-TV</string>
+    <string name="live_tv_detail">Der Antennen- oder Kabeltuner des Fernsehers.</string>
+    <string name="no_sources">Keine Quellen</string>
+    <string name="no_sources_detail">Dieser Fernseher meldet keine HDMI- oder Tuner-Eingänge.</string>
+    <string name="cant_open">Dieser Fernseher hat keine App, die diese Quelle öffnet.</string>
+    <plurals name="devices_connected">
+        <item quantity="one">%1$d Gerät angeschlossen.</item>
+        <item quantity="other">%1$d Geräte angeschlossen.</item>
+    </plurals>
+</resources>

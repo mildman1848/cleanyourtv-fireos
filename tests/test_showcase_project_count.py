@@ -162,7 +162,7 @@ def pt_spelled(lines):
 # "N projects so far." line is the number the rows are counted from; every page here must agree with
 # it, and adding a project means bumping all of them.
 SPELLED_PAGES = {
-    "README.md": ("projects", spelled_number),
+    # README.md is the Fire OS page and no longer spells the count.
     "README.pt-BR.md": ("projetos", spelled_number_pt),
 }
 

@@ -70,9 +70,9 @@ class PrivacyNextStepTest(unittest.TestCase):
         return [line.strip() for line in lines[start:end]]
 
     def test_the_write_step_is_the_readme_form(self):
-        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        readme = (ROOT / "docs" / "privacy.md").read_text(encoding="utf-8")
         found = re.search(r"`(TV_HOST=\S+ tools/venv/bin/python -I tools/privacy\.py)", readme)
-        self.assertIsNotNone(found, "README.md no longer shows how to start tools/privacy.py")
+        self.assertIsNotNone(found, "docs/privacy.md no longer shows how to start tools/privacy.py")
         expected = re.sub(r"^TV_HOST=\S+", "TV_HOST=<tv ip>", found.group(1)) + " --write privacy.txt"
         write = [line for line in self.report_block() if "--write" in line]
         self.assertEqual(len(write), 1, write)

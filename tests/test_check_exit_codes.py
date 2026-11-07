@@ -212,7 +212,8 @@ class CheckExitCodeTest(unittest.TestCase):
         self.assertEqual([], self.commands_sent())
 
     def test_the_readme_names_every_code_the_checker_can_return(self):
-        self.assertIn("(docs/firmware-updates.md)", "\n".join(readme_section(README.read_text(encoding="utf-8"))))
+        # The front page only points at the guide; the guide owns the exit-code section.
+        self.assertIn("(docs/firmware-updates.md)", README.read_text(encoding="utf-8"))
         section = readme_section(GUIDE.read_text(encoding="utf-8"), JOB)
         self.assertIsNotNone(section, "%s is gone from docs/firmware-updates.md: the weekly job has no page" % JOB)
         self.assertGreaterEqual(len(paragraphs(section)), 4, "the section reads as nearly empty")

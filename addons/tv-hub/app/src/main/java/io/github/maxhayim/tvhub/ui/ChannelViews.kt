@@ -1,5 +1,7 @@
 package io.github.maxhayim.tvhub.ui
 
+import io.github.maxhayim.tvhub.R
+
 import android.content.Context
 import android.view.Gravity
 import android.view.View
@@ -55,12 +57,12 @@ class ChannelRow(c: Context) : LinearLayout(c) {
             progress.visibility = View.VISIBLE
             progress.progress = (((nowMs - cur.start) * 1000) / (cur.stop - cur.start).coerceAtLeast(1)).toInt()
         } else {
-            now.text = if (ch.epgIds.isEmpty()) "No guide information" else "No programme listed now"
+            now.setText(if (ch.epgIds.isEmpty()) R.string.no_guide_info else R.string.no_programme_now)
             progress.visibility = View.GONE
         }
-        next.text = nx?.let { "Next  ${Ui.time(context, it.start)}  ${it.title}" } ?: ""
+        next.text = nx?.let { context.getString(R.string.next_programme, Ui.time(context, it.start), it.title) } ?: ""
         next.visibility = if (nx == null) View.GONE else View.VISIBLE
-        contentDescription = listOfNotNull(ch.number, ch.name, cur?.title?.let { "now $it" }).joinToString(", ")
+        contentDescription = listOfNotNull(ch.number, ch.name, cur?.title?.let { context.getString(R.string.cd_now, it) }).joinToString(", ")
     }
 }
 
@@ -110,7 +112,7 @@ class ChannelCard(c: Context) : LinearLayout(c) {
 
     fun bindChannel(ch: Channel, now: Programme?) {
         name.text = listOfNotNull(ch.number, ch.name).joinToString("  ")
-        sub.text = now?.title ?: if (ch.epgIds.isEmpty()) "Live" else ""
+        sub.text = now?.title ?: if (ch.epgIds.isEmpty()) context.getString(R.string.live) else ""
         initial.text = ch.name
         // The name stands in for the logo until one arrives, never behind it.
         (context.applicationContext as TvHubApp).logos.load(ch.logo, logo, dp(85)) { has -> initial.visibility = if (has) View.INVISIBLE else View.VISIBLE }
@@ -119,10 +121,10 @@ class ChannelCard(c: Context) : LinearLayout(c) {
 
     fun bindApp(label: String, icon: android.graphics.drawable.Drawable?) {
         name.text = label
-        sub.text = "Opens the app"
+        sub.setText(R.string.opens_app)
         initial.text = if (icon == null) label else ""
         initial.visibility = View.VISIBLE
         logo.setImageDrawable(icon)
-        contentDescription = "$label, opens the app"
+        contentDescription = context.getString(R.string.cd_opens_app, label)
     }
 }

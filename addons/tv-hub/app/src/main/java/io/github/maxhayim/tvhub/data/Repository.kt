@@ -1,5 +1,8 @@
 package io.github.maxhayim.tvhub.data
 
+import io.github.maxhayim.tvhub.R
+import io.github.maxhayim.tvhub.TvHubApp
+
 import android.content.Context
 import android.util.Xml
 import io.github.maxhayim.tvhub.model.AppShortcut
@@ -80,7 +83,7 @@ class Repository(private val context: Context) {
         val epgUrls = LinkedHashSet<String>()
         for (s in sources) {
             if (s.type == SourceType.APPS) continue
-            _refresh.value = RefreshState(true, "Reading ${s.name}…", errors)
+            _refresh.value = RefreshState(true, TvHubApp.str(R.string.rf_reading, s.name), errors)
             try {
                 val r = Providers.forType(s.type).load(s)
                 if (s.type != SourceType.XMLTV) db.replaceStreams(s.id, r.channels)
@@ -93,12 +96,12 @@ class Repository(private val context: Context) {
                 // The previous channels stay, so a server that is down for a moment does not empty the guide.
                 epgUrls += db.epgUrls(s.id)
                 val old = _sources.value.firstOrNull { it.first.id == s.id }?.second ?: SourceStatus()
-                db.setStatus(s.id, old.copy(error = e.message ?: "Could not read this source"))
+                db.setStatus(s.id, old.copy(error = e.message ?: TvHubApp.str(R.string.rf_could_not_read)))
             }
         }
         reload()
         if (epgUrls.isNotEmpty()) {
-            _refresh.value = RefreshState(true, "Reading the guide…", errors)
+            _refresh.value = RefreshState(true, TvHubApp.str(R.string.rf_reading_guide), errors)
             errors += readGuides(epgUrls.toList(), sources)
         } else {
             db.replaceGuide { emptyMap() }
@@ -106,7 +109,7 @@ class Repository(private val context: Context) {
         prefs.lastRefresh = System.currentTimeMillis()
         reload()
         _guideVersion.value++
-        _refresh.value = RefreshState(false, if (errors == 0) "Up to date" else "$errors source${if (errors == 1) "" else "s"} could not be read", errors)
+        _refresh.value = RefreshState(false, if (errors == 0) TvHubApp.str(R.string.rf_up_to_date) else TvHubApp.plural(R.plurals.n_sources_failed, errors), errors)
     }
 
     /** Returns how many guides failed. A failed guide's errors land on the XMLTV source that named it, if any. */
@@ -131,14 +134,14 @@ class Repository(private val context: Context) {
                         p.setInput(input, null)
                         parser.parse(p, insert)
                     }
-                    if (parser.channelCount == 0 && parser.programmeCount == 0) throw java.io.IOException("That address did not return an XMLTV guide")
+                    if (parser.channelCount == 0 && parser.programmeCount == 0) throw java.io.IOException(TvHubApp.str(R.string.ed_not_xmltv))
                     parser.nameMatches.forEach { (k, v) -> names.putIfAbsent(k, v) }
                     xmltvSource?.let { db.setStatus(it.id, SourceStatus(System.currentTimeMillis(), parser.channelCount, 0, null)) }
                 } catch (e: Exception) {
                     failed++
                     Log.w("Guide ${Log.redact(u)} failed", e)
                     val msg = when (e) {
-                        is org.xmlpull.v1.XmlPullParserException -> "The guide is not valid XMLTV"
+                        is org.xmlpull.v1.XmlPullParserException -> TvHubApp.str(R.string.rf_guide_invalid)
                         else -> Http.friendly(e).message
                     }
                     xmltvSource?.let { db.setStatus(it.id, SourceStatus(System.currentTimeMillis(), 0, 0, msg)) }

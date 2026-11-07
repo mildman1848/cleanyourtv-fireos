@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Beim Einschalten öffnen</string>
+    <string name="watching">Öffnet eine App, wenn der Fernseher eingeschaltet wird</string>
+    <string name="hint">Öffnet die gewählte App, sobald sich der Bildschirm einschaltet.</string>
+    <string name="enabled_state">Beim Einschalten öffnen: %1$s</string>
+    <string name="link_state">Link: %1$s (OK löscht ihn)</string>
+    <string name="delay_state">Wartezeit nach dem Einschalten: %1$d Sekunden</string>
+    <string name="test">Jetzt testen</string>
+    <string name="on">an</string>
+    <string name="off">aus</string>
+    <string name="none">keine gewählt</string>
+    <string name="choose">OK zum Wählen einer App</string>
+    <string name="change">OK zum Ändern der App</string>
+    <string name="missing">%1$s (nicht installiert)</string>
+    <string name="pick_title">App wählen</string>
+    <string name="pick_hint">OK wählt die App. Zurück lässt alles unverändert.</string>
+</resources>

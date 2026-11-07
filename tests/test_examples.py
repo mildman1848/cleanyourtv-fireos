@@ -122,8 +122,7 @@ class ExampleListsTest(unittest.TestCase):
         # README.md has no TV table of its own any more: it points at examples/README.md and the site's
         # search. A translation that still carries the short table has one row per list.
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        self.assertIn("[examples/README.md](examples/README.md)", readme)
-        self.assertIn("https://cleanyour.tv/tvs", readme)
+        self.assertNotIn("\n| TV | OS |\n", readme)  # the Fire OS front page has no TV table
         example_rows = table_rows(EXAMPLES / "README.md", "| Folder |")
         example_tvs = sorted(r.split("|")[2].strip() for r in example_rows)
         for name in ("README.md", "README.nl.md"):

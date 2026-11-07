@@ -24,7 +24,8 @@ LINK = re.compile(r"\]\(([^)\s]+)\)|href=\"([^\"]+)\"")
 
 
 def translations():
-    return sorted(p.name for p in ROOT.iterdir() if p.is_file() and TRANSLATION.match(p.name))
+    """Only actively maintained landing-page translations are linked from this fork's front page."""
+    return [name for name in ("README.de.md",) if (ROOT / name).is_file()]
 
 
 def links(text):
@@ -50,9 +51,8 @@ def missing(needed, text):
 
 class ReadmeTranslationsTest(unittest.TestCase):
     def test_every_translation_is_found(self):
-        # A regex that matches nothing would make the checks below pass for any set of pages.
-        self.assertGreaterEqual(len(translations()), 3, "no README.<language>.md files were found")
-        self.assertIn("README.vi.md", translations())
+        self.assertEqual(["README.de.md"], translations(),
+                         "the maintained Fire OS front page should have its German translation")
 
     def test_the_front_page_links_every_translation(self):
         text = (ROOT / FRONT).read_text(encoding="utf-8")

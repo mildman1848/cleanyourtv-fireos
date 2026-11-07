@@ -1,5 +1,7 @@
 package io.github.maxhayim.tvhub.ui
 
+import io.github.maxhayim.tvhub.R
+
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
@@ -37,7 +39,7 @@ class ChannelsScreen(host: MainActivity, private val favoritesOnly: Boolean) : S
     private var query = ""
     private var nnJob: Job? = null
 
-    private val title = Ui.text(ctx, if (favoritesOnly) "Favorites" else "Live TV", 30f, bold = true)
+    private val title = Ui.text(ctx, ctx.getString(if (favoritesOnly) R.string.favorites else R.string.live_tv), 30f, bold = true)
     private val empty = Ui.text(ctx, "", 18f, Ui.DIM, lines = 4)
     private val adapter = ChannelAdapter({ list, i -> host.play(list, i) }, ::toggleFav)
     private val list = RecyclerView(ctx).apply {
@@ -56,7 +58,7 @@ class ChannelsScreen(host: MainActivity, private val favoritesOnly: Boolean) : S
         setPadding(0, dp(4), 0, dp(24)); clipToPadding = false
     }
     private val search = EditText(ctx).apply {
-        hint = "Search channels"
+        hint = ctx.getString(R.string.search_channels)
         setHintTextColor(Ui.DIM); setTextColor(Ui.TEXT); textSize = 18f
         isSingleLine = true
         imeOptions = EditorInfo.IME_ACTION_SEARCH
@@ -95,12 +97,12 @@ class ChannelsScreen(host: MainActivity, private val favoritesOnly: Boolean) : S
 
     private fun rebuildCats() {
         val out = ArrayList<Cat>()
-        out += Cat("All channels") { true }
+        out += Cat(str(R.string.all_channels)) { true }
         if (!favoritesOnly) {
-            out += Cat("Favorites") { it.key in favs }
+            out += Cat(str(R.string.favorites)) { it.key in favs }
             channels.mapNotNull { it.group }.distinct().forEach { g -> out += Cat(g) { it.group == g } }
             val sources = channels.flatMap { it.sourceNames }.distinct()
-            if (sources.size > 1) sources.forEach { s -> out += Cat("From $s") { s in it.sourceNames } }
+            if (sources.size > 1) sources.forEach { s -> out += Cat(str(R.string.from_source, s)) { s in it.sourceNames } }
         }
         cats = out
         if (catIndex >= cats.size) catIndex = 0
@@ -117,10 +119,10 @@ class ChannelsScreen(host: MainActivity, private val favoritesOnly: Boolean) : S
         adapter.submit(shown)
         empty.text = when {
             shown.isNotEmpty() -> ""
-            channels.isEmpty() -> "No channels yet. Add a source in Sources."
-            favoritesOnly && favs.isEmpty() -> "No favourites yet. Hold OK on a channel in Live TV or the Guide to add it."
-            query.isNotEmpty() -> "No channel matches \"$query\"."
-            else -> "No channels here."
+            channels.isEmpty() -> str(R.string.empty_no_channels)
+            favoritesOnly && favs.isEmpty() -> str(R.string.empty_no_favs_live)
+            query.isNotEmpty() -> str(R.string.empty_no_match, query)
+            else -> str(R.string.empty_none_here)
         }
         empty.visibility = if (shown.isEmpty()) View.VISIBLE else View.GONE
         loadNowNext()
@@ -138,7 +140,7 @@ class ChannelsScreen(host: MainActivity, private val favoritesOnly: Boolean) : S
 
     private fun toggleFav(ch: Channel) {
         val on = repo.toggleFavorite(ch.key)
-        Toast.makeText(ctx, if (on) "Added ${ch.name} to Favorites" else "Removed ${ch.name} from Favorites", Toast.LENGTH_SHORT).show()
+        Toast.makeText(ctx, str(if (on) R.string.fav_added else R.string.fav_removed, ch.name), Toast.LENGTH_SHORT).show()
     }
 
     override fun focusFirst(): Boolean {

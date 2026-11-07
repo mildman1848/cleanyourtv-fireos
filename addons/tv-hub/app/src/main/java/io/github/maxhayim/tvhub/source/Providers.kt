@@ -1,5 +1,8 @@
 package io.github.maxhayim.tvhub.source
 
+import io.github.maxhayim.tvhub.R
+import io.github.maxhayim.tvhub.TvHubApp
+
 import io.github.maxhayim.tvhub.data.Http
 import io.github.maxhayim.tvhub.model.RawChannel
 import io.github.maxhayim.tvhub.model.SourceConfig
@@ -54,11 +57,11 @@ object Providers {
     }
 
     private fun readPlaylist(url: String, cfg: SourceConfig): M3uParser.Result {
-        if (!M3uParser.isHttp(url.trim())) throw IOException("The address must start with http:// or https://")
+        if (!M3uParser.isHttp(url.trim())) throw IOException(TvHubApp.str(R.string.pv_http))
         val r = try {
             Http.open(url.trim(), PLAYLIST_MAX).bufferedReader(Charsets.UTF_8).use { M3uParser.parse(it, cfg.id, cfg.name) }
         } catch (e: Exception) { throw Http.friendly(e) }
-        if (!r.isPlaylist) throw IOException("That address did not return an M3U playlist")
+        if (!r.isPlaylist) throw IOException(TvHubApp.str(R.string.pv_not_m3u))
         return r
     }
 }

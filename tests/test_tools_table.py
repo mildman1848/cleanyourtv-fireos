@@ -104,14 +104,17 @@ class ToolsTableTest(unittest.TestCase):
     def setUp(self):
         self.rows = table_rows(README.read_text(encoding="utf-8"))
 
-    def test_the_readme_has_a_tools_table_to_read(self):
-        # Without this, a renamed heading would report every tool as missing (or none as checked).
-        self.assertGreaterEqual(len(self.rows), 8, "the README's Tools table was not found")
+    def test_the_fire_os_front_page_has_no_generic_tools_table(self):
+        # The Fire OS README is not the upstream tool catalogue: it names only the tools the fork's
+        # procedure uses, and the rest are found through each script's usage lines and tools/*.md.
+        self.assertEqual([], self.rows)
 
-    def test_every_tool_has_a_row(self):
-        missing = unlisted(tool_files(), listed(self.rows))
-        self.assertEqual(missing, [], "tools a reader cannot find from the README's Tools table: "
-                                      + ", ".join(f"tools/{name}" for name in missing))
+    def test_the_fire_os_tools_are_named_and_exist(self):
+        text = README.read_text(encoding="utf-8")
+        for name in ("install_apk.py", "home_redirect.py", "disable.sh"):
+            with self.subTest(tool=name):
+                self.assertIn("tools/" + name, text)
+                self.assertTrue((TOOLS_DIR / name).exists())
 
     def test_no_row_names_a_tool_that_is_not_there(self):
         for name in sorted(listed(self.rows)):

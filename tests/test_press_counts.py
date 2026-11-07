@@ -75,7 +75,7 @@ VIDEO_LINK = re.compile(r"\((https?://[^)\s]*(?:youtube\.com|bilibili\.com)/[^)\
 # are not.
 CARD_ALT = re.compile(r'src="docs/card(?:-halloween)?\.jpg"[^>]*?alt="([^"]*)"')
 # The front pages that show the card and repeat its numbers in the story section today.
-STORY_PAGES = ("README.md", "README.de.md", "README.nl.md", "README.uk.md", "README.tr.md")
+STORY_PAGES = ("README.nl.md", "README.uk.md", "README.tr.md")  # README.md and README.de.md are Fire OS pages with no press story
 # Two front pages carry the story paragraph without the card: README.pt-BR.md and README.he.md have
 # no docs/card.jpg, so card_alt_texts() never reaches them and none of the checks above read the
 # numbers they write. README.pt-BR.md said the totals README.md had when the translation landed (420
@@ -378,12 +378,10 @@ class PressCountsTest(unittest.TestCase):
             self.assertEqual(country_rows + self.counts.get(LATAM, 0) + self.counts[ONLINE], self.numbers["total"])
 
     def test_readme_alt_text_matches_the_list(self):
-        alt = re.search(r'and (\d+) more: (\d+) articles from (\d+) countries', README.read_text(encoding="utf-8"))
-        self.assertIsNotNone(alt, "the README card alt text no longer states 'and N more: N articles from N countries'")
-        more, articles, countries = (int(g) for g in alt.groups())
-        self.assertEqual(articles, self.numbers["total"], "README alt text and docs/PRESS.md disagree on the article count")
-        self.assertEqual(countries, self.numbers["countries"], "README alt text and docs/PRESS.md disagree on the country count")
-        self.assertEqual(more, self.numbers["total"] - len(logos()), "README alt text and the logos in tools/readme_featured.py disagree on the '+N more'")
+        # The Fire OS front page advertises no press card; the translations' alt texts are checked below.
+        text = README.read_text(encoding="utf-8")
+        self.assertNotIn("docs/card", text)
+        self.assertIsNone(re.search(r"articles from \d+ countries", text))
 
     def test_every_readme_card_states_the_same_numbers(self):
         # The card is on every page in STORY_PAGES, and each alt text states the total, the country count
@@ -595,7 +593,7 @@ class FrontPageTotalsTest(unittest.TestCase):
         # never reads them: README.pt-BR.md was left at 420 models and 108 brands while README.md's
         # alt text had moved to 433 and 114, and README.he.md repeated the pair with nothing reading
         # it. The card's alt text is the generated copy, so that is what these pages are held to.
-        card = card_totals(self.pages["README.md"])
+        card = card_totals(self.pages["README.nl.md"])
         pages = [name for name in story_pages() if name not in self.pages]
         self.assertLessEqual(
             set(STORY_WITHOUT_CARD), set(pages),
@@ -608,7 +606,7 @@ class FrontPageTotalsTest(unittest.TestCase):
                 self.assertEqual(
                     card, read,
                     f"{name} states (TV models, brands) {read} in its story sentence and "
-                    f"README.md's card states {card}; tools/gen_tables.py does not rewrite that sentence")
+                    f"README.nl.md's card states {card}; tools/gen_tables.py does not rewrite that sentence")
 
     def test_the_walk_reads_the_totals_this_file_was_written_for(self):
         # A reader answering () or None for every page would pass the rule above; each page carries two

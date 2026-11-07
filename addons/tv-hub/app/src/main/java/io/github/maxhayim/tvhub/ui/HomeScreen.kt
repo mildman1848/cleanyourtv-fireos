@@ -1,5 +1,7 @@
 package io.github.maxhayim.tvhub.ui
 
+import io.github.maxhayim.tvhub.R
+
 import android.content.Intent
 import android.view.View
 import android.widget.HorizontalScrollView
@@ -26,7 +28,7 @@ class HomeScreen(host: MainActivity) : Screen(host) {
         isFillViewport = true
         isVerticalScrollBarEnabled = false
         val head = Ui.horizontal(ctx).apply {
-            addView(Ui.text(ctx, "Live TV", 34f, bold = true), Ui.lp(0, Ui.WRAP, 1f))
+            addView(Ui.text(ctx, str(R.string.nav_live), 34f, bold = true), Ui.lp(0, Ui.WRAP, 1f))
             addView(clock)
         }
         body.addView(head)
@@ -53,26 +55,26 @@ class HomeScreen(host: MainActivity) : Screen(host) {
         val nn = withContext(Dispatchers.IO) { repo.nowNext((recents + favList).distinctBy { it.key }) }
 
         summary.text = when {
-            !hasSources -> "No sources yet. Add an M3U playlist, Dispatcharr, an HDHomeRun tuner or your streaming apps."
-            channels.isEmpty() -> "Your sources have no channels yet. Check Sources for errors, or refresh."
-            else -> "${channels.size} channels" + (if (apps.isNotEmpty()) " · ${apps.size} app${if (apps.size == 1) "" else "s"}" else "")
+            !hasSources -> str(R.string.home_no_sources)
+            channels.isEmpty() -> str(R.string.home_no_channels)
+            else -> plural(R.plurals.n_channels, channels.size) + (if (apps.isNotEmpty()) " · " + plural(R.plurals.n_apps, apps.size) else "")
         }
 
         actions.removeAllViews()
         if (channels.isNotEmpty()) {
-            actions.addView(Ui.button(ctx, "Open the guide") { host.go(MainActivity.Page.GUIDE) })
-            actions.addView(Ui.button(ctx, "All channels") { host.go(MainActivity.Page.LIVE) })
-            recents.firstOrNull()?.let { last -> actions.addView(Ui.button(ctx, "Resume ${last.name}") { host.play(channels, channels.indexOfFirst { it.key == last.key }.coerceAtLeast(0)) }) }
+            actions.addView(Ui.button(ctx, str(R.string.home_open_guide)) { host.go(MainActivity.Page.GUIDE) })
+            actions.addView(Ui.button(ctx, str(R.string.all_channels)) { host.go(MainActivity.Page.LIVE) })
+            recents.firstOrNull()?.let { last -> actions.addView(Ui.button(ctx, str(R.string.home_resume, last.name)) { host.play(channels, channels.indexOfFirst { it.key == last.key }.coerceAtLeast(0)) }) }
         }
         if (!hasSources || channels.isEmpty()) {
-            actions.addView(Ui.button(ctx, "Set up sources") { ctx.startActivity(Intent(ctx, OnboardingActivity::class.java)) })
+            actions.addView(Ui.button(ctx, str(R.string.home_setup)) { ctx.startActivity(Intent(ctx, OnboardingActivity::class.java)) })
         }
-        actions.addView(Ui.button(ctx, "Refresh") { repo.refreshAll(); Toast.makeText(ctx, "Refreshing…", Toast.LENGTH_SHORT).show() })
+        actions.addView(Ui.button(ctx, str(R.string.home_refresh)) { repo.refreshAll(); Toast.makeText(ctx, str(R.string.home_refreshing), Toast.LENGTH_SHORT).show() })
 
         rows.removeAllViews()
-        if (recents.isNotEmpty()) rows.addView(channelRow("Recently watched", recents, nn))
-        if (favList.isNotEmpty()) rows.addView(channelRow("Favorites", favList, nn))
-        else if (channels.isNotEmpty()) rows.addView(Ui.text(ctx, "Hold OK on a channel to add it to Favorites.", 16f, Ui.DIM))
+        if (recents.isNotEmpty()) rows.addView(channelRow(str(R.string.home_recents), recents, nn))
+        if (favList.isNotEmpty()) rows.addView(channelRow(str(R.string.favorites), favList, nn))
+        else if (channels.isNotEmpty()) rows.addView(Ui.text(ctx, str(R.string.home_fav_hint), 16f, Ui.DIM))
         if (apps.isNotEmpty()) rows.addView(appRow(apps))
         if (hadFocus) focusFirst()
     }
@@ -87,7 +89,7 @@ class HomeScreen(host: MainActivity) : Screen(host) {
                 setOnClickListener { host.play(list, i) }
                 setOnLongClickListener {
                     val on = repo.toggleFavorite(ch.key)
-                    Toast.makeText(ctx, if (on) "Added ${ch.name} to Favorites" else "Removed ${ch.name} from Favorites", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(ctx, str(if (on) R.string.fav_added else R.string.fav_removed, ch.name), Toast.LENGTH_SHORT).show()
                     true
                 }
             })
@@ -98,8 +100,8 @@ class HomeScreen(host: MainActivity) : Screen(host) {
 
     private fun appRow(apps: List<io.github.maxhayim.tvhub.model.AppShortcut>): View {
         val box = Ui.vertical(ctx, 12)
-        box.addView(Ui.text(ctx, "Apps", 20f, bold = true))
-        box.addView(Ui.text(ctx, "These open the app itself. Their channels are not part of this guide.", 14f, Ui.DIM))
+        box.addView(Ui.text(ctx, str(R.string.home_apps), 20f, bold = true))
+        box.addView(Ui.text(ctx, str(R.string.home_apps_hint), 14f, Ui.DIM))
         val strip = Ui.horizontal(ctx, 20).apply { clipChildren = false; setPadding(dp(6), dp(8), dp(6), dp(8)) }
         val pm = ctx.packageManager
         apps.forEach { a ->
@@ -108,7 +110,7 @@ class HomeScreen(host: MainActivity) : Screen(host) {
                 bindApp(a.label, icon)
                 setOnClickListener {
                     val i = Apps.launchIntent(ctx, a.pkg)
-                    if (i != null) ctx.startActivity(i) else Toast.makeText(ctx, "${a.label} is not installed any more", Toast.LENGTH_SHORT).show()
+                    if (i != null) ctx.startActivity(i) else Toast.makeText(ctx, str(R.string.home_app_gone, a.label), Toast.LENGTH_SHORT).show()
                 }
             })
         }

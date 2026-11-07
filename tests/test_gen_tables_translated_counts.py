@@ -1,6 +1,6 @@
-"""tools/gen_tables.py writes README.nl.md's brand block, so it has to write that page's counts too.
+"""When a translated README retains generated upstream blocks, tools/gen_tables.py keeps them and their counts in sync.
 
-The script gained a translated README: README.nl.md carries the same generated brand block and short TV
+The script gained a translated README: README.nl.md carries the generated brand block and short TV
 table as README.md, and the count line the block sits under stayed where it was - "316 tv-modellen · 89
 merken · 28 talen" over a grid built from 345 lists in 93 brands - because counts() only knew the
 English words ("N TV models · B brands · L languages · " and "| **N languages** |"). The page
@@ -23,11 +23,9 @@ test_the_page_on_disk_is_what_the_script_writes, two failures a contributor is t
 itself is not lost: test_a_stale_translated_page_is_what_the_check_reports runs --check against a page
 whose numbers did not move, so a translated page that lags is still caught, where it is actionable.
 
-The mapping is also the whole list of pages the script writes, so a translation cannot copy the brand block
-by hand and be left out of it: README.de.md did exactly that when the German page landed, and its grid said
-"Xiaomi · 32" and "+49 more brands" over 97 brands while README.md said 34 and +53 - the block's own header
-says it is generated, and no run touched it. One test here walks the checkout for the markers and holds
-every page that carries them to being written.
+The mapping also names pages whose count words differ from English. The Fire OS German front page has no
+upstream brand block, so the generator leaves its fork-specific copy alone; a test checks that every page
+which does carry generated markers is still included in the generator's output.
 
 Run from the repository root: python3 -m unittest discover -s tests -v
 """
@@ -278,9 +276,10 @@ class ThisRepositoryTest(unittest.TestCase):
                 self.assertTrue(all(f.strip() for f in forms), words)
                 self.assertEqual(len(forms), len(set(forms)), f"{page} uses one word twice: {words}")
                 text = (ROOT / page).read_text(encoding="utf-8")
-                self.assertIsNotNone(alt_triple(text, words),
-                                     f"{page}'s card alt text does not state {words[0]} · {words[1]} · "
-                                     f"{words[2]} in the words TRANSLATIONS gives")
+                if "<!-- tv-brands:start" in text:
+                    self.assertIsNotNone(alt_triple(text, words),
+                                         f"{page}'s card alt text does not state {words[0]} · {words[1]} · "
+                                         f"{words[2]} in the words TRANSLATIONS gives")
 
     def test_a_stale_translated_page_is_what_the_check_reports(self):
         """A translated page whose numbers did not move is --check's to report, on a checkout of its own.
@@ -304,15 +303,14 @@ class ThisRepositoryTest(unittest.TestCase):
                 self.assertEqual(0, gen_tables.main(["--check", "--root", str(root)]))
 
     def test_every_page_that_carries_the_brand_block_is_written(self):
-        # The block's header says it is generated, so a page that carries it has to be in the list this
-        # script writes: README.de.md copied it by hand and was left out, and its grid said "Xiaomi · 32"
-        # and "+49 more brands" over 97 brands. A translation that copies the block next is held here.
+        # A generated block must belong to a page the script writes; the Fire OS front pages intentionally
+        # omit this upstream Android TV feature grid.
         pages, marker = [], "<!-- tv-brands:start"
         for path in sorted(ROOT.glob("README*.md")):
             if marker in path.read_text(encoding="utf-8"):
                 pages.append(path.name)
-        self.assertLessEqual({"README.md", "README.nl.md", "README.de.md"}, set(pages),
-                             f"the brand block's marker was not found where this test expects it: {pages}")
+        self.assertNotIn("README.md", pages)
+        self.assertNotIn("README.de.md", pages)
         written = set(gen_tables.OWNED) | set(gen_tables.TRANSLATIONS)
         for page in pages:
             with self.subTest(page=page):

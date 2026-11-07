@@ -1,5 +1,7 @@
 package io.github.maxhayim.tvhub.player
 
+import io.github.maxhayim.tvhub.R
+
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
@@ -92,7 +94,7 @@ class PlayerActivity : Activity() {
         }
         errorText = Ui.text(this, "", 18f, lines = 4)
         errorBox.addView(errorText)
-        errorBox.addView(Ui.text(this, "OK: try again · Up/Down: other channels · Back: guide", 15f, Ui.DIM))
+        errorBox.addView(Ui.text(this, getString(R.string.pl_hint), 15f, Ui.DIM))
         root.addView(errorBox, FrameLayout.LayoutParams(dp(640), Ui.WRAP, Gravity.CENTER))
         setContentView(root)
     }
@@ -126,7 +128,7 @@ class PlayerActivity : Activity() {
                         Log.i("Playing: video ${v?.sampleMimeType} ${v?.width}x${v?.height}, audio ${a?.sampleMimeType} ${a?.channelCount}ch")
                     }
                     // A live stream that ends was cut by the server; start it again.
-                    if (state == Player.STATE_ENDED) recover("The stream ended")
+                    if (state == Player.STATE_ENDED) recover(getString(R.string.pl_err_ended))
                 }
                 override fun onPlayerError(error: PlaybackException) { onError(error) }
             })
@@ -155,7 +157,7 @@ class PlayerActivity : Activity() {
 
     private fun playStream(s: StreamRef?, forceHls: Boolean = false) {
         val p = player ?: return
-        if (s == null) { showError("This channel has no stream address."); return }
+        if (s == null) { showError(getString(R.string.pl_err_no_address)); return }
         val headers = HashMap<String, String>()
         s.referrer?.let { headers["Referer"] = it }
         val http = DefaultHttpDataSource.Factory()
@@ -198,7 +200,7 @@ class PlayerActivity : Activity() {
                 streamIndex++; retries = 0; triedHls = false
                 playStream(ch.streams[streamIndex])
                 overlay.setSource(ch.streams[streamIndex].sourceName, index, list.size)
-                overlay.flash("Trying ${ch.streams[streamIndex].sourceName}")
+                overlay.flash(getString(R.string.pl_trying, ch.streams[streamIndex].sourceName))
             }
             else -> showError(message(e))
         }
@@ -206,7 +208,7 @@ class PlayerActivity : Activity() {
 
     private fun recover(note: String?) {
         retries++
-        if (retries > 3) { showError(note ?: "The stream keeps stopping."); return }
+        if (retries > 3) { showError(note ?: getString(R.string.pl_err_keeps_stopping)); return }
         spinner.visibility = View.VISIBLE
         main.postDelayed({ player?.let { it.seekToDefaultPosition(); it.prepare(); it.play() } }, 1500L * retries)
     }
@@ -220,19 +222,19 @@ class PlayerActivity : Activity() {
 
     private fun message(e: PlaybackException): String = when (e.errorCode) {
         PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS -> when (val code = (e.cause as? androidx.media3.datasource.HttpDataSource.InvalidResponseCodeException)?.responseCode) {
-            404, 410 -> "The stream is not on its server any more (HTTP $code)."
-            401, 403 -> "The stream's server refused it (HTTP $code). The link may have expired, or the account may be in use elsewhere."
-            null -> "The stream's server answered with an error."
-            else -> "The stream's server answered HTTP $code."
+            404, 410 -> getString(R.string.pl_err_gone, code)
+            401, 403 -> getString(R.string.pl_err_refused, code)
+            null -> getString(R.string.pl_err_server)
+            else -> getString(R.string.pl_err_http, code)
         }
-        PlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND -> "The stream was not found on its server."
-        PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED, PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT -> "Can't reach the stream's server."
-        PlaybackException.ERROR_CODE_IO_CLEARTEXT_NOT_PERMITTED -> "This TV blocked an unencrypted (http) stream."
-        PlaybackException.ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED, PlaybackException.ERROR_CODE_PARSING_MANIFEST_MALFORMED -> "This stream's format is not supported."
+        PlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND -> getString(R.string.pl_err_not_found)
+        PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED, PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT -> getString(R.string.pl_err_unreachable)
+        PlaybackException.ERROR_CODE_IO_CLEARTEXT_NOT_PERMITTED -> getString(R.string.pl_err_cleartext)
+        PlaybackException.ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED, PlaybackException.ERROR_CODE_PARSING_MANIFEST_MALFORMED -> getString(R.string.pl_err_format)
         PlaybackException.ERROR_CODE_DECODER_INIT_FAILED, PlaybackException.ERROR_CODE_DECODING_FORMAT_UNSUPPORTED, PlaybackException.ERROR_CODE_DECODING_FORMAT_EXCEEDS_CAPABILITIES ->
-            "This TV can't decode this channel's video or sound (for example MPEG-2 broadcast video or AC-4 audio)."
-        PlaybackException.ERROR_CODE_DRM_UNSPECIFIED, PlaybackException.ERROR_CODE_DRM_SCHEME_UNSUPPORTED -> "This channel is encrypted (DRM) and can't be played here."
-        else -> "Playback failed (${e.errorCodeName})."
+            getString(R.string.pl_err_decode)
+        PlaybackException.ERROR_CODE_DRM_UNSPECIFIED, PlaybackException.ERROR_CODE_DRM_SCHEME_UNSUPPORTED -> getString(R.string.pl_err_drm)
+        else -> getString(R.string.pl_err_failed, e.errorCodeName)
     }
 
     private fun showError(msg: String) {
@@ -255,7 +257,7 @@ class PlayerActivity : Activity() {
         when (keyCode) {
             KeyEvent.KEYCODE_DPAD_UP, KeyEvent.KEYCODE_CHANNEL_UP -> { tune(index + 1); return true }
             KeyEvent.KEYCODE_DPAD_DOWN, KeyEvent.KEYCODE_CHANNEL_DOWN -> { tune(index - 1); return true }
-            KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_LAST_CHANNEL -> { if (previous >= 0) tune(previous) else overlay.flash("No previous channel yet"); return true }
+            KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_LAST_CHANNEL -> { if (previous >= 0) tune(previous) else overlay.flash(getString(R.string.pl_no_prev)); return true }
             KeyEvent.KEYCODE_DPAD_RIGHT, KeyEvent.KEYCODE_INFO -> { showInfo(); return true }
             KeyEvent.KEYCODE_MENU, KeyEvent.KEYCODE_CAPTIONS -> { tracksDialog(); return true }
             KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER -> { event.startTracking(); return true }
@@ -289,7 +291,7 @@ class PlayerActivity : Activity() {
 
     private val tuneDigits = Runnable {
         val i = list.indexOfFirst { it.number == digits }.takeIf { it >= 0 } ?: list.indexOfFirst { it.number?.substringBefore('.') == digits }
-        if (i >= 0) tune(i) else overlay.flash("No channel $digits")
+        if (i >= 0) tune(i) else overlay.flash(getString(R.string.pl_no_channel, digits))
         digits = ""
     }
 
@@ -304,30 +306,30 @@ class PlayerActivity : Activity() {
                 if (!g.isTrackSupported(t)) continue
                 val f = g.getTrackFormat(t)
                 val mark = if (g.isTrackSelected(t)) "● " else "   "
-                opts += Opt(mark + "Audio: " + (f.label ?: f.language ?: "Track ${opts.size + 1}") + (f.channelCount.takeIf { it > 0 }?.let { " · ${it}ch" } ?: "")) {
+                opts += Opt(mark + getString(R.string.pl_audio, f.label ?: f.language ?: getString(R.string.pl_track, opts.size + 1)) + (f.channelCount.takeIf { it > 0 }?.let { getString(R.string.pl_channels_suffix, it) } ?: "")) {
                     p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setOverrideForType(TrackSelectionOverride(g.mediaTrackGroup, t)).build()
                 }
             }
         }
         val text = groups.filter { it.type == C.TRACK_TYPE_TEXT }
         val textOn = text.any { it.isSelected }
-        opts += Opt((if (!textOn) "● " else "   ") + "Subtitles: off") {
+        opts += Opt((if (!textOn) "● " else "   ") + getString(R.string.pl_subs_off)) {
             p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true).build()
         }
         text.forEach { g: Tracks.Group ->
             for (t in 0 until g.length) {
                 if (!g.isTrackSupported(t)) continue
                 val f = g.getTrackFormat(t)
-                opts += Opt((if (g.isTrackSelected(t)) "● " else "   ") + "Subtitles: " + (f.label ?: f.language ?: "Track ${t + 1}")) {
+                opts += Opt((if (g.isTrackSelected(t)) "● " else "   ") + getString(R.string.pl_subs, f.label ?: f.language ?: getString(R.string.pl_track, t + 1))) {
                     p.trackSelectionParameters = p.trackSelectionParameters.buildUpon()
                         .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
                         .setOverrideForType(TrackSelectionOverride(g.mediaTrackGroup, t)).build()
                 }
             }
         }
-        if (text.isEmpty()) opts += Opt("   No subtitles or captions in this stream") {}
+        if (text.isEmpty()) opts += Opt("   " + getString(R.string.pl_no_subs)) {}
         AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle("Audio and subtitles")
+            .setTitle(R.string.pl_tracks_title)
             .setItems(opts.map { it.label }.toTypedArray()) { _, i -> opts[i].apply() }
             .show()
     }
@@ -365,16 +367,16 @@ class PlayerActivity : Activity() {
 
         fun bindChannel(ch: Channel, total: Int, i: Int) {
             title.text = listOfNotNull(ch.number, ch.name).joinToString("   ")
-            position.text = "${i + 1} of $total · ${ch.streams.getOrNull(streamIndex)?.sourceName ?: ""}"
-            now.text = if (ch.epgIds.isEmpty()) "No guide information" else ""
+            position.text = context.getString(R.string.pl_position, i + 1, total, ch.streams.getOrNull(streamIndex)?.sourceName ?: "")
+            now.text = if (ch.epgIds.isEmpty()) context.getString(R.string.no_guide_info) else ""
             next.text = ""; note.text = ""
         }
 
-        fun setSource(name: String, i: Int, total: Int) { position.text = "${i + 1} of $total · $name" }
+        fun setSource(name: String, i: Int, total: Int) { position.text = context.getString(R.string.pl_position, i + 1, total, name) }
 
         fun bindProgrammes(cur: Programme?, nx: Programme?) {
-            if (cur != null) now.text = "Now  ${Ui.time(context, cur.start)} – ${Ui.time(context, cur.stop)}   ${cur.title}"
-            if (nx != null) next.text = "Next  ${Ui.time(context, nx.start)}   ${nx.title}"
+            if (cur != null) now.text = context.getString(R.string.now_programme, Ui.time(context, cur.start), Ui.time(context, cur.stop), cur.title)
+            if (nx != null) next.text = context.getString(R.string.next_programme_wide, Ui.time(context, nx.start), nx.title)
         }
 
         fun show() { alpha = 1f; main.removeCallbacks(hide); main.postDelayed(hide, 5000) }

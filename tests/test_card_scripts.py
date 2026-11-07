@@ -111,14 +111,16 @@ class CardScriptOutputTest(unittest.TestCase):
                                     "a reader who follows it writes a new file that nothing links")
 
     def test_the_card_script_writes_the_picture_the_front_page_shows(self):
-        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        # The Fire OS English page shows no card; the translations that still do are read instead.
+        self.assertNotIn("docs/card", (ROOT / "README.md").read_text(encoding="utf-8"))
+        readme = "\n".join(p.read_text(encoding="utf-8") for p in sorted(ROOT.glob("README.*.md")))
         shown = set(re.findall(r'<img src="(docs/[^"]*card[^"]*)"', readme))
-        self.assertTrue(shown, "README.md no longer displays a card image, so this check would prove nothing")
+        self.assertTrue(shown, "no README translation displays a card image, so this check would prove nothing")
         named = set(DOCS_PICTURE.findall(docstring_of(TOOLS / "readme_card.py")))
         for rel in sorted(shown):
             with self.subTest(picture=rel):
                 self.assertIn(rel, named,
-                              f"README.md displays {rel} but readme_card.py's usage line writes {sorted(named)}")
+                              f"a README displays {rel} but readme_card.py's usage line writes {sorted(named)}")
 
     def test_the_docstring_reader_reads_a_script_and_not_its_comments(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -1,5 +1,7 @@
 package io.github.maxhayim.tvhub.ui
 
+import io.github.maxhayim.tvhub.R
+
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -34,12 +36,12 @@ class SourceEditorActivity : Activity() {
 
     private lateinit var form: LinearLayout
     private lateinit var result: android.widget.TextView
-    private val name by lazy { field("Name", "") }
+    private val name by lazy { field(getString(R.string.ed_name), "") }
     private val url by lazy { field("", "", InputType.TYPE_TEXT_VARIATION_URI) }
-    private val epg by lazy { field("Guide (XMLTV) address, optional", "", InputType.TYPE_TEXT_VARIATION_URI) }
-    private val profile by lazy { field("Output profile, optional (empty for all channels)", "") }
-    private val headerEpg by lazy { check("Also use the guide the playlist names in its header (x-tvg-url)") }
-    private val transcode by lazy { check("Ask the tuner for H.264 (HDHomeRun EXTEND models only). Turn on if channels play sound but no picture") }
+    private val epg by lazy { field(getString(R.string.ed_epg), "", InputType.TYPE_TEXT_VARIATION_URI) }
+    private val profile by lazy { field(getString(R.string.ed_profile), "") }
+    private val headerEpg by lazy { check(getString(R.string.ed_header_epg)) }
+    private val transcode by lazy { check(getString(R.string.ed_transcode)) }
     private val appChecks = LinkedHashMap<String, CheckBox>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,42 +52,42 @@ class SourceEditorActivity : Activity() {
 
         form = Ui.vertical(this, 14).apply { setPadding(dp(64), dp(40), dp(64), dp(40)) }
         result = Ui.text(this, "", 16f, Ui.DIM, lines = 4)
-        form.addView(Ui.text(this, (if (existing == null) "Add " else "Edit ") + SourcesScreen.typeLabel(type), 28f, bold = true))
+        form.addView(Ui.text(this, getString(if (existing == null) R.string.ed_add else R.string.ed_edit, SourcesScreen.typeLabel(this, type)), 28f, bold = true))
         when (type) {
             SourceType.M3U -> {
-                hint("The address of an M3U or M3U8 playlist you are allowed to use. Many IPTV services give one; it is stored encrypted on this TV.")
+                hint(getString(R.string.ed_hint_m3u))
                 labelled("Playlist address", url, "http://192.168.1.10:8000/playlist.m3u")
-                labelled("Name", name, "My playlist"); add(epg); add(headerEpg)
+                labelled(getString(R.string.ed_name), name, getString(R.string.ed_name_m3u)); add(epg); add(headerEpg)
             }
             SourceType.XMLTV -> {
-                hint("An XMLTV guide (.xml or .xml.gz). Its programmes are matched to channels by tvg-id, or by name for channels without one.")
+                hint(getString(R.string.ed_hint_xmltv))
                 labelled("Guide address", url, "http://192.168.1.10:8000/guide.xml")
-                labelled("Name", name, "My guide")
+                labelled(getString(R.string.ed_name), name, getString(R.string.ed_name_xmltv))
             }
             SourceType.DISPATCHARR -> {
-                hint("Your Dispatcharr server's address, as you open it in a browser. TV Hub reads its /output/m3u and /output/epg. If you get \"refused access\", allow this TV's network under Dispatcharr's M3U/EPG network settings.")
+                hint(getString(R.string.ed_hint_dispatcharr))
                 labelled("Server address", url, "http://192.168.1.10:9191")
-                labelled("Name", name, "Dispatcharr"); add(profile)
+                labelled(getString(R.string.ed_name), name, getString(R.string.type_dispatcharr)); add(profile)
             }
             SourceType.HDHOMERUN -> {
-                hint("HDHomeRun tuners are found on the local network. The guide is not read from SiliconDust's online service; add an XMLTV guide for listings.")
+                hint(getString(R.string.ed_hint_hdhr))
                 val found = Ui.vertical(this, 8)
-                add(Ui.button(this, "Scan the network") { scan(found) })
+                add(Ui.button(this, getString(R.string.ed_scan)) { scan(found) })
                 add(found)
-                labelled("Tuner address", url, "192.168.1.50")
-                labelled("Name", name, "Antenna"); add(transcode)
+                labelled(getString(R.string.ed_tuner_address), url, "192.168.1.50")
+                labelled(getString(R.string.ed_name), name, getString(R.string.ed_name_hdhr)); add(transcode)
             }
             SourceType.APPS -> {
-                hint("Apps you pick appear as shortcuts on Home. They open the app; TV Hub cannot read their channels or guides, so they are never shown as channels.")
+                hint(getString(R.string.ed_hint_apps))
                 val picked = existing?.packages?.toSet()
                 Apps.detected(this).forEach { appCheck(it.pkg, it.label, picked?.contains(it.pkg) ?: true) }
-                if (appChecks.isEmpty()) hint("None of the live-TV apps TV Hub knows is installed.")
+                if (appChecks.isEmpty()) hint(getString(R.string.ed_no_known_apps))
                 val more = Ui.vertical(this, 8)
-                add(Ui.button(this, "Show every TV app") {
+                add(Ui.button(this, getString(R.string.ed_show_all_apps)) {
                     Apps.allTvApps(this).filter { it.pkg !in appChecks }.forEach { appCheck(it.pkg, it.label, picked?.contains(it.pkg) == true, more) }
                 })
                 add(more)
-                name.setText("Streaming apps")
+                name.setText(R.string.ed_name_apps)
             }
         }
         existing?.let { e ->
@@ -94,9 +96,9 @@ class SourceEditorActivity : Activity() {
         } ?: run { headerEpg.isChecked = true }
 
         val buttons = Ui.horizontal(this, 16)
-        buttons.addView(Ui.button(this, "Save") { save() })
-        if (type != SourceType.APPS) buttons.addView(Ui.button(this, "Check") { test() })
-        buttons.addView(Ui.button(this, "Cancel") { finish() })
+        buttons.addView(Ui.button(this, getString(R.string.save)) { save() })
+        if (type != SourceType.APPS) buttons.addView(Ui.button(this, getString(R.string.check)) { test() })
+        buttons.addView(Ui.button(this, getString(R.string.cancel)) { finish() })
         form.addView(buttons, Ui.lp(Ui.WRAP, Ui.WRAP).apply { topMargin = dp(10) })
         form.addView(result)
 
@@ -144,16 +146,16 @@ class SourceEditorActivity : Activity() {
 
     private fun scan(into: LinearLayout) {
         into.removeAllViews()
-        into.addView(Ui.text(this, "Scanning…", 16f, Ui.DIM))
+        into.addView(Ui.text(this, getString(R.string.ed_scanning), 16f, Ui.DIM))
         scope.launch {
             val devices = withContext(Dispatchers.IO) { runCatching { HdHomeRun.discover() }.getOrDefault(emptyList()) }
             into.removeAllViews()
-            if (devices.isEmpty()) into.addView(Ui.text(this@SourceEditorActivity, "No tuner answered. Check it is on the same network, or type its address below.", 16f, Ui.ERROR, lines = 3))
+            if (devices.isEmpty()) into.addView(Ui.text(this@SourceEditorActivity, getString(R.string.ed_no_tuner), 16f, Ui.ERROR, lines = 3))
             devices.forEach { d ->
-                into.addView(Ui.button(this@SourceEditorActivity, "${d.name} ${d.model} · ${d.host} · ${d.tuners} tuners") {
+                into.addView(Ui.button(this@SourceEditorActivity, "${d.name} ${d.model} · ${d.host} · ${SourcesScreen.plural(this@SourceEditorActivity, R.plurals.n_tuners, d.tuners)}") {
                     url.setText(d.host)
                     if (name.text.isBlank()) name.setText(d.name)
-                    result.text = "Selected ${d.host}. Save to add it."
+                    result.text = getString(R.string.ed_selected, d.host)
                 })
             }
             into.getChildAt(0)?.requestFocus()
@@ -165,11 +167,11 @@ class SourceEditorActivity : Activity() {
         val n = name.text.toString().trim().ifEmpty { defaultName() }
         val e = epg.text.toString().trim()
         when (type) {
-            SourceType.M3U, SourceType.XMLTV, SourceType.DISPATCHARR -> if (!M3uParser.isHttp(u)) return fail("Enter an address starting with http:// or https://")
-            SourceType.HDHOMERUN -> if (u.isEmpty() || u.contains(' ')) return fail("Enter the tuner's address, or scan for it")
+            SourceType.M3U, SourceType.XMLTV, SourceType.DISPATCHARR -> if (!M3uParser.isHttp(u)) return fail(getString(R.string.ed_err_http))
+            SourceType.HDHOMERUN -> if (u.isEmpty() || u.contains(' ')) return fail(getString(R.string.ed_err_tuner))
             SourceType.APPS -> Unit
         }
-        if (type == SourceType.M3U && e.isNotEmpty() && !M3uParser.isHttp(e)) return fail("The guide address must start with http:// or https://")
+        if (type == SourceType.M3U && e.isNotEmpty() && !M3uParser.isHttp(e)) return fail(getString(R.string.ed_err_guide_http))
         return (existing ?: SourceConfig(type = type, name = n)).copy(
             name = n, url = u, epgUrl = e, profile = profile.text.toString().trim(),
             useHeaderEpg = headerEpg.isChecked, transcode = transcode.isChecked,
@@ -178,8 +180,8 @@ class SourceEditorActivity : Activity() {
     }
 
     private fun defaultName() = when (type) {
-        SourceType.M3U -> "Playlist"; SourceType.XMLTV -> "Guide"; SourceType.DISPATCHARR -> "Dispatcharr"
-        SourceType.HDHOMERUN -> "Antenna"; SourceType.APPS -> "Streaming apps"
+        SourceType.M3U -> getString(R.string.ed_name_playlist); SourceType.XMLTV -> getString(R.string.ed_name_guide); SourceType.DISPATCHARR -> getString(R.string.type_dispatcharr)
+        SourceType.HDHOMERUN -> getString(R.string.ed_name_hdhr); SourceType.APPS -> getString(R.string.ed_name_apps)
     }
 
     private fun fail(msg: String): SourceConfig? { result.setTextColor(Ui.ERROR); result.text = msg; return null }
@@ -193,7 +195,7 @@ class SourceEditorActivity : Activity() {
 
     private fun test() {
         val s = build() ?: return
-        result.setTextColor(Ui.DIM); result.text = "Checking…"
+        result.setTextColor(Ui.DIM); result.text = getString(R.string.ed_checking)
         scope.launch {
             val msg = withContext(Dispatchers.IO) {
                 try {
@@ -201,14 +203,14 @@ class SourceEditorActivity : Activity() {
                         io.github.maxhayim.tvhub.data.Http.open(s.url, 256L * 1024 * 1024).use { input ->
                             val head = ByteArray(4096); val n = input.read(head)
                             val t = String(head, 0, maxOf(n, 0))
-                            if (t.contains("<tv")) "Found an XMLTV guide. Save to read it." else throw java.io.IOException("That address did not return an XMLTV guide")
+                            if (t.contains("<tv")) getString(R.string.ed_found_guide) else throw java.io.IOException(getString(R.string.ed_not_xmltv))
                         }
                     } else {
                         val r = Providers.forType(type).load(s)
-                        "Found ${SourcesScreen.plural(r.channels.size, "channel")}" + (if (r.skipped > 0) ", ${r.skipped} skipped" else "") +
-                            (if (r.epgUrls.isNotEmpty()) " and a guide address" else "") + ". Save to add them."
+                        SourcesScreen.plural(this@SourceEditorActivity, R.plurals.n_found_channels, r.channels.size) + (if (r.skipped > 0) getString(R.string.ed_found_skipped, r.skipped) else "") +
+                            (if (r.epgUrls.isNotEmpty()) getString(R.string.ed_found_guide_addr) else "") + getString(R.string.ed_found_end)
                     }
-                } catch (e: Exception) { "!" + (io.github.maxhayim.tvhub.data.Http.friendly(e).message ?: "Could not read it") }
+                } catch (e: Exception) { "!" + (io.github.maxhayim.tvhub.data.Http.friendly(e).message ?: getString(R.string.ed_could_not_read)) }
             }
             result.setTextColor(if (msg.startsWith("!")) Ui.ERROR else Ui.OK)
             result.text = msg.removePrefix("!")

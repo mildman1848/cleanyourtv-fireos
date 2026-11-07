@@ -348,9 +348,12 @@ class CatalogueTest(unittest.TestCase):
 
 class DocumentationTest(unittest.TestCase):
     def test_readme_lists_the_tool_and_what_it_cannot_say(self):
+        # docs/privacy.md owns the claim; the front page only points at it.
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        self.assertIn("[`tools/privacy.py`](tools/privacy.py)", readme)
-        self.assertIn("What the audit cannot do is prove intent", readme)
+        self.assertIn("(docs/privacy.md)", readme)
+        guide = (ROOT / "docs" / "privacy.md").read_text(encoding="utf-8")
+        self.assertIn("`tools/privacy.py`", guide)
+        self.assertIn("What the audit cannot do is prove intent", guide)
 
 
 if __name__ == "__main__":

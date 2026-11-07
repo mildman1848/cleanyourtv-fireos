@@ -146,56 +146,33 @@ class ThisRepositoryTest(unittest.TestCase):
         once = gen_tables.render(ROOT)
         self.assertEqual(gen_tables.render(ROOT, texts=once), once)
 
-    def test_the_brand_grid_counts_every_folder_once(self):
+    def test_the_fireos_front_page_does_not_claim_upstream_tv_coverage(self):
         readme = gen_tables.render(ROOT)["README.md"]
-        block = section(readme, "tv-brands")
-        top = grid(block)
-        line, summary = below_grid(block)
-        projectors = re.search(r"(?:·\s*|^)([^·]*) projectors$", line).group(1)
-        names = re.split(r", | and ", projectors)
-        bold = [int(n) for n in re.findall(r"\*\*[^*]+\*\* (\d+)", line)]
-        plain = [p.strip() for p in line[:line.rindex(projectors)].split("·")
-                 if p.strip() and not p.strip().startswith("**")]
-        entries = gen_tables.load(ROOT)
-        projector_lists = sum(1 for _, d in entries if d["brand"] in names)
-        self.assertEqual(sum(n for _, _, n in top) + sum(bold) + len(plain) + projector_lists, len(entries))
-        brands = len(top) + len(bold) + len(plain) + len(names)
-        self.assertIn(f"{len(entries)} TV models · {brands} brands · ", readme)
-        self.assertEqual(summary, f"<summary>+{len(bold) + len(plain)} more brands and "
-                                  f"{len(names)} projector brands</summary>")
+        self.assertNotIn("<!-- tv-brands:start", readme)
+        self.assertNotIn("TV models ·", readme)
+        self.assertNotIn("brands ·", readme)
+        self.assertIn("Amazon Fire TV", readme)
 
-    def test_the_grid_is_the_thirty_brands_with_the_most_lists(self):
-        block = section(gen_tables.render(ROOT)["README.md"], "tv-brands")
-        self.assertEqual(block[:2], GRID_HEAD)
-        rows = [r for r in block if r.startswith("| [")]
-        self.assertEqual(len(rows), 5, "30 brands in 6 columns make 5 rows")
-        top = grid(block)
-        self.assertEqual(len(top), gen_tables.TOP)
-        counts = [n for _, _, n in top]
-        self.assertEqual(counts, sorted(counts, reverse=True))
-        line, _ = below_grid(block)
-        below = [int(n) for n in re.findall(r"\*\*[^*]+\*\* (\d+)", line)] or [1]
-        self.assertGreaterEqual(min(counts), max(below), "a brand under the grid has more lists than one in it")
-        for brand, query, _ in top:
-            self.assertEqual(query, gen_tables.quote(brand, safe=""))
+    def test_generator_does_not_insert_a_brand_grid_without_markers(self):
+        readme = gen_tables.render(ROOT)["README.md"]
+        self.assertFalse(gen_tables.has_markers(readme, "tv-brands"))
+        self.assertNotIn("[Acme](https://cleanyour.tv/tvs?q=Acme)", readme)
 
-    def test_the_readme_has_no_table_and_the_translation_keeps_its_block(self):
+    def test_the_upstream_examples_table_stays_generated(self):
         texts = gen_tables.render(ROOT)
-        self.assertFalse(gen_tables.has_markers(texts["README.md"], "tv-table"))
-        self.assertIn("README.nl.md", texts)
-        self.assertEqual(section(texts["README.nl.md"], "tv-brands"), section(texts["README.md"], "tv-brands"))
+        self.assertIn("examples/README.md", texts)
+        self.assertIn("<!-- tv-table:start", texts["examples/README.md"])
+        self.assertIn("<!-- tv-table:end -->", texts["examples/README.md"])
 
-    def test_both_tables_are_in_the_same_alphabetical_order(self):
+    def test_examples_table_is_in_alphabetical_order(self):
         texts = gen_tables.render(ROOT)
-        readme = [r.split(" | ")[0][2:] for r in section(texts["README.nl.md"], "tv-table")[2:]]
         examples = [r.split(" | ")[1] for r in section(texts["examples/README.md"], "tv-table")[2:]]
-        self.assertEqual(readme, examples)
-        self.assertEqual(readme, sorted(readme, key=str.casefold))
+        self.assertEqual(examples, sorted(examples, key=str.casefold))
 
     @unittest.skipUnless(os.environ.get("CLEANYOURTV_STRICT"), "tables are generated on merge; strict on main only")
     def test_the_committed_tables_are_sorted(self):
         # What main shows a reader, not only what the script would write.
-        for path, header, cell in (("README.nl.md", "| TV | OS |", 1), ("examples/README.md", "| Folder |", 2)):
+        for path, header, cell in (("examples/README.md", "| Folder |", 2),):
             with self.subTest(path=path):
                 lines = (ROOT / path).read_text(encoding="utf-8").split("\n")
                 start = next(i for i, l in enumerate(lines) if l.startswith(header))
@@ -207,12 +184,11 @@ class ThisRepositoryTest(unittest.TestCase):
                 self.assertGreaterEqual(len(rows), 200)
                 self.assertEqual(rows, sorted(rows, key=str.casefold), f"{path}: rows out of order")
 
-    def test_every_folder_has_a_row_in_both_tables(self):
+    def test_every_folder_has_a_row_in_examples_table(self):
         texts = gen_tables.render(ROOT)
         names = sorted(p.name for p in (ROOT / "examples").iterdir() if p.is_dir())
         rows = section(texts["examples/README.md"], "tv-table")[2:]
         self.assertEqual(sorted(re.match(r"\| `([^`]+)/`", r).group(1) for r in rows), names)
-        self.assertEqual(len(section(texts["README.nl.md"], "tv-table")) - 2, len(names))
 
 
 class GeneratorTest(unittest.TestCase):

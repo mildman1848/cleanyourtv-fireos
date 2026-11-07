@@ -101,10 +101,11 @@ class KirkwoodNoteTest(unittest.TestCase):
         self.assertIn("FATAL EXCEPTION IN SYSTEM PROCESS", self.crash)
 
     def test_the_readme_clause_covers_both_boxes(self):
-        clause = next(line for line in README.splitlines() if "costs phone casting" in line)
-        self.assertIn("Google TV Streamer", clause)
-        self.assertIn("Chromecast", clause)
-        self.assertIn("docs/TROUBLESHOOTING.md", clause)
+        # The clause lives in docs/TROUBLESHOOTING.md now; the Fire OS front page does not repeat it.
+        self.assertNotIn("costs phone casting", README)
+        trouble = (ROOT / "docs" / "TROUBLESHOOTING.md").read_text(encoding="utf-8")
+        self.assertIn("Google TV Streamer", trouble)
+        self.assertIn("Chromecast", trouble)
 
     def test_the_prompt_asks_for_the_focused_app_before_claiming_success(self):
         self.assertIn("mFocusedApp", PROMPT)

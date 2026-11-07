@@ -39,8 +39,8 @@ STEP_TWO = re.compile(r"^\**\s*2\.")
 
 
 def pages():
-    """The English README and every translation beside it."""
-    return [ROOT / "README.md"] + sorted(ROOT.glob("README.*.md"))
+    """The two maintained front pages in this Fire OS fork."""
+    return [ROOT / "README.md", ROOT / "README.de.md"]
 
 
 def rows(text):
@@ -60,8 +60,8 @@ def prompt_rows(text):
 
 
 def slug():
-    """owner/repo, read from the issue template's links so a rename moves the clone URL too."""
-    match = re.search(r"github\.com/([\w.-]+/[\w.-]+)/", ISSUE_TEMPLATE.read_text(encoding="utf-8"))
+    """owner/repo, read from the clone command maintained in PROMPT.md."""
+    match = re.search(r"git clone https://github\.com/([\w.-]+/[\w.-]+)", PROMPT.read_text(encoding="utf-8"))
     return match.group(1) if match else ""
 
 
@@ -104,13 +104,13 @@ def note_after(text, needle):
 
 class TheCloneStep(unittest.TestCase):
     def test_the_slug_is_read_out_of_the_issue_template(self):
-        self.assertTrue(ISSUE_TEMPLATE.is_file(), "no .github/ISSUE_TEMPLATE/config.yml to read the repo from")
+        self.assertTrue(PROMPT.is_file(), "no PROMPT.md to read the clone URL from")
         self.assertRegex(slug(), r"^[\w.-]+/[\w.-]+$",
-                         "the issue template names no github.com/<owner>/<repo> URL")
+                         "PROMPT.md names no github.com/<owner>/<repo> clone URL")
 
     def test_all_readmes_are_read(self):
         found = pages()
-        self.assertEqual(12, len(found), f"expected README.md and eleven translations, read {[p.name for p in found]}")
+        self.assertEqual(2, len(found), f"expected the maintained English and German pages, read {[p.name for p in found]}")
         for page in found:
             self.assertGreaterEqual(len(rows(page.read_text(encoding="utf-8"))), 3,
                                     f"{page.name} parses as fewer than three table rows")
@@ -127,7 +127,7 @@ class TheCloneStep(unittest.TestCase):
         for page in pages():
             with self.subTest(page=page.name):
                 note = note_after(page.read_text(encoding="utf-8"), "PROMPT.md")
-                for path in ("tools/disable.sh", "launcher/build-and-install.sh"):
+                for path in ("tools/disable.sh", "tools/install_apk.py", "tools/home_redirect.py"):
                     self.assertIn(path, note,
                                   f"{page.name}'s line under the quick start does not name {path}: {note!r}")
 

@@ -82,19 +82,14 @@ def steps(answer):
 
 
 class DoingItByHandTest(unittest.TestCase):
-    def test_the_section_says_how_a_wireless_debugging_tv_gets_port_5555(self):
-        by_hand = flat(section(README, "## Doing it by hand"))
-        self.assertIn("port 5555", by_hand)
-        self.assertIn("Wireless debugging", by_hand)
-        self.assertIn("adb tcpip 5555", by_hand)
-        self.assertIn(f"({LINK})", by_hand)
+    def test_the_fireos_quick_start_uses_the_safe_install_route(self):
+        self.assertIn("## Quick start for this fork", README)
+        self.assertIn("tools/install_apk.py", README)
+        self.assertIn("Do not run `launcher/build-and-install.sh` on Fire OS", README)
 
-    def test_the_note_comes_before_the_first_command(self):
-        # A reader who runs `tools/tv.py --probe` first has already hit the refused port.
-        by_hand = flat(section(README, "## Doing it by hand"))
-        self.assertIn("tools/tv.py --probe", by_hand)
-        self.assertIn("Wireless debugging", by_hand)
-        self.assertLess(by_hand.index("Wireless debugging"), by_hand.index("tools/tv.py --probe"))
+    def test_the_fireos_quick_start_links_the_fireos_procedure(self):
+        self.assertIn("docs/fireos.md", README)
+        self.assertIn("PROMPT.md", README)
 
     def test_the_link_lands_on_the_pairing_steps(self):
         self.assertIn("## Connecting", TROUBLE.splitlines())

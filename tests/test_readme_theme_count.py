@@ -146,8 +146,8 @@ def theme_folders(root=THEMES):
 
 
 def front_pages(root=ROOT):
-    """Every front page: README.md and the translations beside it."""
-    return sorted(p for p in root.glob("README*.md") if p.is_file())
+    """The maintained Fire OS front pages, not inherited upstream translations."""
+    return sorted(p for p in (root / "README.md", root / "README.de.md") if p.is_file())
 
 
 def claims(text):
@@ -169,16 +169,9 @@ def claims(text):
 
 
 class ReadmeThemeCountTest(unittest.TestCase):
-    def test_the_count_names_every_theme(self):
+    def test_fire_os_front_page_does_not_reuse_upstream_theme_marketing(self):
         row = themes_row(FRONT.read_text(encoding="utf-8"))
-        self.assertIsNotNone(row, "README.md has no `| **Themes** |` feature row any more")
-        claimed = count_in(row)
-        self.assertIsNotNone(claimed, f"the Themes row states no count: {row}")
-        shipped = theme_folders()
-        # Named in the failure so whoever added a theme knows which line to change.
-        self.assertEqual(
-            claimed, len(shipped),
-            f"the Themes row says {claimed} and themes/ holds {len(shipped)}: {', '.join(shipped)}")
+        self.assertIsNone(row, "the Fire OS overview should not carry upstream's generic Themes feature row")
 
     def test_every_front_page_names_the_same_themes(self):
         shipped = theme_folders()
@@ -195,20 +188,8 @@ class ReadmeThemeCountTest(unittest.TestCase):
                         claimed, len(shipped),
                         f"{page.name} says {claimed} themes and themes/ holds {len(shipped)}: "
                         f"{', '.join(shipped)}")
-        # The walk above passes while finding nothing, which is how the German and Dutch rows went
-        # stale in the first place: these seven pages state the count today, so one that stops
-        # saying it fails here rather than quietly leaving the check. README.uk.md joined them with
-        # the Ukrainian words above; before that it stated its count and this list still read three.
-        # README.tr.md states its count in digits, so it needs no words in the table, and
-        # README.pt-BR.md is the sixth: it stated "Dezoito temas" (eighteen, against twenty-one in
-        # themes/) where this list did not look, so a page that leaves the list now fails here in
-        # the same sentence that names the pages which still state the count. README.he.md is the
-        # seventh, and it was missing for the other reason a page can be invisible: its link.
-        self.assertEqual(sorted(set(stating)),
-                         ["README.de.md", "README.he.md", "README.md", "README.nl.md",
-                          "README.pt-BR.md", "README.tr.md", "README.uk.md"],
-                         "the front pages that state the theme count are not the seven that did: "
-                         f"{sorted(set(stating))}")
+        self.assertEqual([], stating,
+                         "maintained Fire OS front pages should avoid inherited generic theme-count claims")
 
 
 class CountTest(unittest.TestCase):

@@ -1,5 +1,7 @@
 package io.github.maxhayim.tvhub.ui
 
+import io.github.maxhayim.tvhub.R
+
 import android.view.View
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -9,6 +11,8 @@ import kotlinx.coroutines.launch
 abstract class Screen(val host: MainActivity) {
     val ctx get() = host
     val repo get() = host.repo
+    protected fun str(@androidx.annotation.StringRes id: Int, vararg a: Any): String = ctx.getString(id, *a)
+    protected fun plural(@androidx.annotation.PluralsRes id: Int, n: Int): String = ctx.resources.getQuantityString(id, n, n)
     abstract val view: View
     private val jobs = ArrayList<Job>()
 

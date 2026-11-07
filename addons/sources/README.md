@@ -7,7 +7,7 @@ brightness, and OK switches to one. Live TV comes last. For the [Clean Your TV](
 declares a [module card](../../docs/modules.md): once you answer **Show card** its tile reads "Devices" with a
 green glow. On any other Android TV home it is an ordinary app. (The launcher keeps the name of its own Inputs
 menu for itself, in English and in the TV's language. That is "Sources" in French, so the card is called Devices.)
-The screen is in English and French.
+The screen is in English, French, Italian and German (the TV's language decides; other languages get English).
 
 ![Sources on a TV](screenshot.jpg)
 
@@ -49,3 +49,7 @@ MOKA R8G (Android 14), on a home app that implements the module-card spec: the c
 ## Maintainer
 
 [@maxhayim](https://github.com/maxhayim)
+
+## Deutsch
+
+Die App heißt auf Deutsch **Quellen** und zeigt Anschlussnamen, Zustände („angeschlossen“, „angeschlossen, im Standby“, „nichts angeschlossen“) und Live-TV auf Deutsch, wenn der Fernseher auf Deutsch eingestellt ist. Die Karte für den CleanYourTV-Launcher heißt weiterhin **Devices**: Ein Kartentitel lässt sich in Spezifikation 1 nicht übersetzen. Gerätenamen kommen per HDMI-CEC von den Geräten selbst und werden nicht übersetzt. Texte: `app/src/main/res/values-de/strings.xml`.

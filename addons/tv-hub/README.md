@@ -52,7 +52,7 @@ itself is missing from the player screenshots because the TV keeps it out of scr
 - **No DRM.** Encrypted channels fail with a message saying so.
 - **No recording, catch-up or background guide refresh.** The guide refreshes when the app opens
   (if older than 12 hours by default) or when you press Refresh.
-- **English only** so far; strings are in code, not yet in resources.
+- **English and German.** All screen text is in Android string resources (`values/` English, the default; `values-de/` German), chosen by the TV's language; other languages get English. Channel, source and app names, programme titles and server messages are shown as they come. A source's error text is stored in the language that was active when it happened.
 - **No configuration backup or import** yet.
 
 ## Install
@@ -184,3 +184,7 @@ player/     PlayerActivity (Media3)
 Testing on a TV, with demo fixtures: [docs/TESTING.md](docs/TESTING.md).
 Third-party licences: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 Maintained by [@maxhayim](https://github.com/maxhayim); issues about TV Hub go to them.
+
+## Deutsch
+
+TV Hub zeigt alle Texte auf Deutsch, wenn die Systemsprache des Fernsehers Deutsch ist (Fire TV: Einstellungen > Mein Fire TV > Info … bzw. Einstellungen > Einstellungen > Sprache). Andere Sprachen sehen Englisch. Kanal-, Quellen- und App-Namen sowie Sendungstitel werden unverändert angezeigt. Die Texte liegen in `app/src/main/res/values/strings.xml` (Englisch) und `values-de/strings.xml` (Deutsch); `tests/test_addon_german_locale.py` prüft, dass beide vollständig sind und die Platzhalter übereinstimmen.

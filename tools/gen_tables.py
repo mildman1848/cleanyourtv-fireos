@@ -24,12 +24,10 @@ line). One optional key: "readme_os", a README table's OS cell when it is not "o
 folders in the same order, alphabetical by "tv" (case ignored), so a brand's models sit together.
 
 The full table lives in examples/README.md between <!-- tv-table:start ... --> and <!-- tv-table:end -->.
-README.md has no table of its own: its brand grid (the TOP brands with the most lists, linked to the site's
-search, and the rest in a <details>) sits between <!-- tv-brands:start ... --> and <!-- tv-brands:end -->.
-README.nl.md, README.de.md, README.uk.md and README.tr.md carry the same brand block and the same counts in
-their own words ("N tv-modellen · B merken · L talen · ", "N TV-Modelle · B Marken · L Sprachen · ",
-and the Ukrainian and Turkish words in TRANSLATIONS below), and a README that still has tv-table markers
-gets the short table there too. Everything outside the markers is hand-written.
+The upstream README brand grid is generated only on translated pages that still carry its markers. A
+Fire OS-focused front page may omit that grid: upstream's broad Android TV examples are not Fire OS test
+coverage. A README with tv-table markers still gets the short table there. Everything outside markers is
+hand-written.
 The counts are the card's alt text ("N TV models · B brands · L languages · "), the "| **L languages** |"
 feature row and STATS in tools/readme_stats.py. Exit codes: 0 up to date (or written), 1 out of date
 (--check), or a count moved and --font could not draw one of the pictures (the tables are written; the
@@ -262,16 +260,11 @@ def stats(text, entries, root):
 
 
 OWNED = ("README.md", "examples/README.md", "tools/readme_stats.py")
-# The translated READMEs that carry the brand block too, written when the file is there - and the three
-# words each of them states its counts in, for the card's alt text ("345 TV models · 93 brands · 29
-# languages · ") and the "| **29 languages** |" row. The brand block is generated, so those numbers have
-# to move with it: README.nl.md was added to this script as it stood and said "316 tv-modellen · 89
-# merken · 28 talen" over a grid built from 345 lists in 93 brands, because counts() only knew the
-# English words. A page listed here without its words would drift the same way, so
-# tests/test_gen_tables_translated_counts.py reads them - and holds every page that carries the markers to
-# being written, which is how README.de.md came here: it copied the block by hand when the German page
-# landed, so its grid said "Xiaomi · 32" and "+49 more brands" over 97 brands while README.md said 34 and
-# +53, and no run moved it.
+# The translated pages whose generated count lines use another language. Some older upstream translations
+# still carry the generated brand block; a Fire OS landing page may omit that block because upstream's
+# general Android TV examples are not evidence of Fire OS coverage. When markers are present, this script
+# keeps the generated section and its counts in sync. The count words are tested in
+# tests/test_gen_tables_translated_counts.py.
 TRANSLATIONS = {"README.nl.md": ("tv-modellen", "merken", "talen"),
                 "README.de.md": ("TV-Modelle", "Marken", "Sprachen"),
                 "README.uk.md": (("модель телевізорів", "моделі телевізорів", "моделей телевізорів"),
@@ -280,8 +273,11 @@ TRANSLATIONS = {"README.nl.md": ("tv-modellen", "merken", "talen"),
 
 
 def readme(text, entries, root, path, words=WORDS):
-    """A README with its brand block (required), its short TV table (only if it has the markers) and counts."""
-    text = between(text, "tv-brands", brand_lines(entries), path)
+    """A README with an optional upstream brand block and optional short TV table, plus generated counts."""
+    has_brand_start = any(l.startswith("<!-- tv-brands:start") for l in text.split("\n"))
+    has_brand_end = any(l.strip() == "<!-- tv-brands:end -->" for l in text.split("\n"))
+    if has_brand_start or has_brand_end:
+        text = between(text, "tv-brands", brand_lines(entries), path)
     if has_markers(text, "tv-table"):
         text = between(text, "tv-table", readme_rows(entries), path)
     return counts(text, entries, root, words)

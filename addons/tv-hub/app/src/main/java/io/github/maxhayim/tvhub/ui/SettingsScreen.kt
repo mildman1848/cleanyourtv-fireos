@@ -1,5 +1,7 @@
 package io.github.maxhayim.tvhub.ui
 
+import io.github.maxhayim.tvhub.R
+
 import android.app.AlertDialog
 import android.content.Intent
 import android.view.View
@@ -16,7 +18,7 @@ class SettingsScreen(host: MainActivity) : Screen(host) {
         clipChildren = false; clipToPadding = false
         isVerticalScrollBarEnabled = false
         val col = Ui.vertical(ctx, 18)
-        col.addView(Ui.text(ctx, "Settings", 30f, bold = true))
+        col.addView(Ui.text(ctx, str(R.string.set_title), 30f, bold = true))
         col.addView(list)
         addView(col, Ui.lp())
         build()
@@ -25,31 +27,30 @@ class SettingsScreen(host: MainActivity) : Screen(host) {
     private fun build() {
         val p = repo.prefs
         list.removeAllViews()
-        row("Merge duplicate channels", if (p.mergeDuplicates) "On: channels with the same tvg-id in several sources show once, and the player falls back between their streams" else "Off: every source keeps its own copy") {
+        row(str(R.string.set_merge), str(if (p.mergeDuplicates) R.string.set_merge_on else R.string.set_merge_off)) {
             repo.setMerge(!p.mergeDuplicates); build()
         }
-        row("Guide length", "${p.guideDays} day${if (p.guideDays == 1) "" else "s"} of listings. Longer guides use more storage and take longer to read") {
+        row(str(R.string.set_guide_length), str(R.string.set_guide_length_detail, plural(R.plurals.n_days, p.guideDays))) {
             p.guideDays = when (p.guideDays) { 1 -> 2; 2 -> 3; 3 -> 7; else -> 1 }; build()
-            Toast.makeText(ctx, "Takes effect at the next refresh", Toast.LENGTH_SHORT).show()
+            Toast.makeText(ctx, str(R.string.set_next_refresh), Toast.LENGTH_SHORT).show()
         }
-        row("Refresh when the app opens", if (p.refreshHours == 0) "Never on its own; use Refresh" else "If the last refresh is older than ${p.refreshHours} hours. Nothing runs in the background") {
+        row(str(R.string.set_refresh), if (p.refreshHours == 0) str(R.string.set_refresh_never) else str(R.string.set_refresh_hours, p.refreshHours)) {
             p.refreshHours = when (p.refreshHours) { 6 -> 12; 12 -> 24; 24 -> 0; else -> 6 }; build()
         }
-        row("Play a channel when the app opens",
-            if (p.autoPlay) "On: the last channel watched, or the lowest number"
-            else "Off: the app opens on Home") {
+        row(str(R.string.set_autoplay),
+            str(if (p.autoPlay) R.string.set_autoplay_on else R.string.set_autoplay_off)) {
             p.autoPlay = !p.autoPlay; build()
         }
-        row("Animations", if (p.animations) "On" else "Off: no zoom on focus and no scrolling motion, for slow TVs") {
+        row(str(R.string.set_animations), str(if (p.animations) R.string.set_on else R.string.set_animations_off)) {
             p.animations = !p.animations; build()
         }
-        row("Clear recently watched", "Empties the Recently watched row") {
-            repo.clearRecents(); Toast.makeText(ctx, "Cleared", Toast.LENGTH_SHORT).show()
+        row(str(R.string.set_clear_recents), str(R.string.set_clear_recents_detail)) {
+            repo.clearRecents(); Toast.makeText(ctx, str(R.string.set_cleared), Toast.LENGTH_SHORT).show()
         }
-        row("Run setup again", "The first-launch steps for adding sources") {
+        row(str(R.string.set_setup_again), str(R.string.set_setup_again_detail)) {
             ctx.startActivity(Intent(ctx, OnboardingActivity::class.java))
         }
-        row("About and licences", "TV Hub ${BuildConfig.VERSION_NAME}, MIT licence") { about() }
+        row(str(R.string.set_about), str(R.string.set_about_detail, BuildConfig.VERSION_NAME)) { about() }
     }
 
     private fun row(title: String, sub: String, onClick: () -> Unit) {
@@ -71,12 +72,12 @@ class SettingsScreen(host: MainActivity) : Screen(host) {
     private fun about() {
         val text = ctx.assets.open("licenses.txt").bufferedReader().use { it.readText() }
         AlertDialog.Builder(ctx, android.R.style.Theme_DeviceDefault_Dialog_Alert)
-            .setTitle("TV Hub ${BuildConfig.VERSION_NAME}")
+            .setTitle(str(R.string.about_title, BuildConfig.VERSION_NAME))
             .setView(ScrollView(ctx).apply {
                 isFocusable = true
                 addView(TextView(ctx).apply { this.text = text; setTextColor(Ui.TEXT); textSize = 14f; setPadding(dp(28), dp(8), dp(28), dp(8)) })
             })
-            .setPositiveButton("Close", null).show()
+            .setPositiveButton(R.string.close, null).show()
     }
 
     override fun focusFirst(): Boolean = list.getChildAt(0)?.requestFocus() ?: false

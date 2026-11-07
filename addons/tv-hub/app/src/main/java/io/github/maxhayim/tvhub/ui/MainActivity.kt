@@ -27,7 +27,7 @@ class MainActivity : Activity() {
     val scope = MainScope()
     val repo get() = (application as TvHubApp).repo
 
-    enum class Page(val label: String) { HOME("Home"), LIVE("Live TV"), GUIDE("Guide"), FAVORITES("Favorites"), SOURCES("Sources"), SETTINGS("Settings") }
+    enum class Page(@androidx.annotation.StringRes val label: Int) { HOME(R.string.nav_home), LIVE(R.string.nav_live), GUIDE(R.string.nav_guide), FAVORITES(R.string.nav_favorites), SOURCES(R.string.nav_sources), SETTINGS(R.string.nav_settings) }
 
     private lateinit var content: FrameLayout
     private lateinit var status: TextView
@@ -52,7 +52,7 @@ class MainActivity : Activity() {
         }
         rail.addView(Ui.text(this, getString(R.string.app_name), 24f, bold = true).apply { setPadding(dp(12), 0, 0, dp(18)) })
         Page.entries.forEach { p ->
-            val item = Ui.text(this, p.label, 19f, Ui.DIM, bold = true).apply {
+            val item = Ui.text(this, getString(p.label), 19f, Ui.DIM, bold = true).apply {
                 isFocusable = true; isClickable = true
                 background = Ui.focusable(this@MainActivity, 0x00000000, 22, Ui.SURFACE)
                 setPadding(dp(16), dp(10), dp(16), dp(10))

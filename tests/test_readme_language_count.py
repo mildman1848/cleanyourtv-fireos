@@ -36,15 +36,7 @@ RECIPE = ROOT / "docs" / "workflows" / "translation.md"
 # The pages that state how many languages the launcher ships, and the word each one states it in. The
 # five above the last two are the pages tools/gen_tables.py writes (its TRANSLATIONS map, plus
 # README.md); README.he.md and README.pt-BR.md are the hand-kept pair this file was written for.
-LANG_ROW = {
-    "README.md": "languages",
-    "README.de.md": "Sprachen",
-    "README.he.md": "שפות",
-    "README.nl.md": "talen",
-    "README.pt-BR.md": "idiomas",
-    "README.tr.md": "dil",
-    "README.uk.md": "мова",
-}
+ACTIVE_FRONT_PAGES = ("README.md", "README.de.md")
 
 # `| **31 languages** | Follows the TV's language ...`. A step row such as `| **1. On the TV** |` is not
 # one: the number there is followed by a period, not by a space and the word.
@@ -75,59 +67,19 @@ def languages(root=ROOT):
 
 
 class LanguageCountTest(unittest.TestCase):
-    def test_every_page_in_the_table_states_the_count_the_launcher_ships(self):
-        shipped = languages()
-        for name, word in sorted(LANG_ROW.items()):
+    def test_fire_os_front_pages_do_not_repeat_upstream_language_marketing(self):
+        for name in ACTIVE_FRONT_PAGES:
             page = ROOT / name
             with self.subTest(page=name):
-                self.assertTrue(page.is_file(), f"{name} is gone from the front pages")
+                self.assertTrue(page.is_file(), f"{name} is missing")
                 text = page.read_text(encoding="utf-8")
-                stated = claimed(text, word)
-                # Named in the failure so whoever adds a language knows which line to change.
-                self.assertIsNotNone(
-                    stated,
-                    f"{name} states no `| **N {word}** |` row any more: the language count is a claim "
-                    f"about the launcher and this file reads it on every page that makes it")
-                self.assertEqual(
-                    stated, shipped,
-                    f"{name} says {stated} languages and the launcher ships {shipped}: "
-                    f"`tools/gen_tables.py` writes the five pages in its TRANSLATIONS map and nothing "
-                    f"writes this one, so its row moves by hand")
+                self.assertEqual([], rows(text),
+                                 f"{name} should not carry upstream's generic language-count claims")
 
-    def test_the_table_covers_every_page_that_states_it_in_one_of_these_words(self):
-        """A page that copies a label this file knows is read, not left outside it.
-
-        README.uk.md, README.tr.md and README.pt-BR.md each joined the table after stating their count
-        where nothing looked. A page that copies one of these seven words is the same case; one that
-        writes the count in a word this file does not carry (a new translation's own) is out of its
-        reach, and that word is the line to add here.
-        """
-        words = set(LANG_ROW.values())
-        for page in front_pages():
-            for number, label in rows(page.read_text(encoding="utf-8")):
-                if label not in words:
-                    continue
-                with self.subTest(page=page.name, word=label):
-                    self.assertEqual(
-                        LANG_ROW.get(page.name), label,
-                        f"{page.name} states the language count as `{label}` and is not in this "
-                        f"file's table, so nothing reads its {number}")
-
-    def test_the_recipe_names_every_page_that_states_the_count(self):
-        """docs/workflows/translation.md step 9 is where a translator is told which pages move.
-
-        Read as a whole page rather than as one step, so rewording or moving the step stays free: what
-        the step is for is that a language added by that page does not leave a front page behind.
-        """
-        recipe = RECIPE.read_text(encoding="utf-8")
-        for name in sorted(LANG_ROW):
-            with self.subTest(page=name):
-                # assertTrue, not assertIn: the page is four thousand words and the failure should
-                # name the page it is about, not print the recipe back.
-                self.assertTrue(
-                    name in recipe,
-                    f"docs/workflows/translation.md does not name {name}, which states the language "
-                    f"count, so the step a translator follows leaves it claiming the old number")
+    def test_current_front_pages_are_english_and_german_only(self):
+        self.assertTrue(all((ROOT / name).is_file() for name in ACTIVE_FRONT_PAGES))
+        self.assertIn("README.de.md", (ROOT / "README.md").read_text(encoding="utf-8"))
+        self.assertIn("README.md", (ROOT / "README.de.md").read_text(encoding="utf-8"))
 
 
 class TheReader(unittest.TestCase):

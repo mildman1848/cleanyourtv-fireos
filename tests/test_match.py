@@ -300,7 +300,9 @@ class CommandLineTest(MatchCase):
         self.assertIn(str(ROOT / "examples"), result.stderr)
 
     def test_the_readme_lists_the_tool(self):
-        self.assertIn("[`tools/match.py`](tools/match.py)", (ROOT / "README.md").read_text(encoding="utf-8"))
+        # No Tools table on the Fire OS front page; the tool documents itself in its usage docstring.
+        self.assertNotIn("[`tools/match.py`]", (ROOT / "README.md").read_text(encoding="utf-8"))
+        self.assertIn("match.py", (ROOT / "tools" / "match.py").read_text(encoding="utf-8").split('"""')[1])
 
 
 if __name__ == "__main__":

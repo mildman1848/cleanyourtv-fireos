@@ -1,5 +1,7 @@
 package io.github.maxhayim.tvhub.ui
 
+import io.github.maxhayim.tvhub.R
+
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
@@ -198,7 +200,7 @@ class GuideView(c: Context) : View(c) {
         if (!am.isEnabled) return
         val ch = channels.getOrNull(focusRow) ?: return
         val p = focused()
-        val text = listOfNotNull(ch.number, ch.name, p?.let { "${it.title}, ${Ui.time(context, it.start)} to ${Ui.time(context, it.stop)}" } ?: "no guide information").joinToString(", ")
+        val text = listOfNotNull(ch.number, ch.name, p?.let { "${it.title}, ${context.getString(R.string.guide_time_range, Ui.time(context, it.start), Ui.time(context, it.stop))}" } ?: context.getString(R.string.no_guide_info).lowercase()).joinToString(", ")
         contentDescription = text
         announceForAccessibility(text)
     }
@@ -210,7 +212,7 @@ class GuideView(c: Context) : View(c) {
         val focusedView = hasFocus()
 
         // Time header.
-        val dayLabel = if (android.text.format.DateUtils.isToday(viewStart)) "Today" else android.text.format.DateFormat.format("EEE d MMM", viewStart).toString()
+        val dayLabel = if (android.text.format.DateUtils.isToday(viewStart)) context.getString(R.string.guide_today) else android.text.format.DateFormat.format("EEE d MMM", viewStart).toString()
         canvas.drawText(dayLabel, dp(4).toFloat(), headerH - dp(14), smallP)
         var t = viewStart
         while (t < viewEnd) {
@@ -252,7 +254,7 @@ class GuideView(c: Context) : View(c) {
             val list = programmes[ch.key]
             when {
                 ch.epgIds.isEmpty() || (list != null && list.isEmpty()) -> {
-                    cell(canvas, chanW, w, y, if (ch.epgIds.isEmpty()) "No guide information" else "No listings in this guide", null, isFocusRow, false)
+                    cell(canvas, chanW, w, y, context.getString(if (ch.epgIds.isEmpty()) R.string.no_guide_info else R.string.guide_no_listings), null, isFocusRow, false)
                 }
                 list == null -> cell(canvas, chanW, w, y, "…", null, false, false)
                 else -> {
@@ -261,12 +263,12 @@ class GuideView(c: Context) : View(c) {
                         val x0 = chanW + (max(p.start, viewStart) - viewStart) * pxPerMs
                         val x1 = chanW + (min(p.stop, viewEnd) - viewStart) * pxPerMs
                         val f = isFocusRow && focusTime >= p.start && focusTime < p.stop
-                        cell(canvas, x0, x1, y, p.title.ifEmpty { "Untitled" }, "${Ui.time(context, p.start)} – ${Ui.time(context, p.stop)}", f, p.isOn(now))
+                        cell(canvas, x0, x1, y, p.title.ifEmpty { context.getString(R.string.guide_untitled) }, "${Ui.time(context, p.start)} – ${Ui.time(context, p.stop)}", f, p.isOn(now))
                     }
                     if (isFocusRow && focused() == null) {
                         val s = floorSlot(focusTime)
                         val x0 = chanW + (s - viewStart) * pxPerMs
-                        cell(canvas, x0, x0 + slotW, y, "No listing", null, true, false)
+                        cell(canvas, x0, x0 + slotW, y, context.getString(R.string.guide_no_listing), null, true, false)
                     }
                 }
             }
@@ -293,7 +295,7 @@ class GuideView(c: Context) : View(c) {
         if (avail < dp(12)) return
         val tx = rect.left + dp(12)
         if (sub == null) {
-            canvas.drawText(TextUtils.ellipsize(title, titleP, avail, TextUtils.TruncateAt.END).toString(), tx, y + rowH / 2 + dp(6), if (title.startsWith("No ") || title == "…") smallP else titleP)
+            canvas.drawText(TextUtils.ellipsize(title, titleP, avail, TextUtils.TruncateAt.END).toString(), tx, y + rowH / 2 + dp(6), if (sub == null) smallP else titleP)
         } else {
             canvas.drawText(TextUtils.ellipsize(title, titleP, avail, TextUtils.TruncateAt.END).toString(), tx, y + rowH / 2 - dp(2), titleP)
             canvas.drawText(TextUtils.ellipsize(sub, smallP, avail, TextUtils.TruncateAt.END).toString(), tx, y + rowH / 2 + dp(17), smallP)
