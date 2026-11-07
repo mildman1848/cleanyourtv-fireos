@@ -41,6 +41,29 @@ CleanYourTV publishes no app in any app store, and clean-your-tv.net is not ours
 [Restoring](#restoring-your-tv) · [Firmware updates](#after-a-firmware-update) ·
 [Questions](#questions-people-ask) · [Contributing](#contributing)
 
+## Fire OS integration status and sources
+
+This branch (`firetv-integration`) is the Fire OS integration of CleanYourTV. It is intended for Amazon
+Fire TV, but it still carries upstream's whole tree (docs, `examples/`, `tests/`, `launcher/`, `tools/`):
+the examples are upstream's tested TVs and are **not** all Fire OS, and a later review will decide what
+stays. [PROMPT.md](PROMPT.md) is the Fire OS procedure; Home takeover, `HomeRedirectService` and any
+accessibility or `WRITE_SECURE_SETTINGS` step are never run without explicit approval and a real-device
+check.
+
+**Test release: tested vs not tested.** Tested without a TV: the protected-package block (Amazon's Home and
+Settings packages cannot be put in a list), `tools/install_apk.py` and `tools/home_redirect.py` against fake
+TVs. **Not tested on any real Fire TV:** the launcher on Fire OS, the opt-in Home redirect and Home-key
+behaviour (there is no autostart). The Java unit tests pass locally. Install, opt-in redirect,
+recovery, caveats and the exact source commits are in [docs/fireos.md](docs/fireos.md).
+
+Built on and inspired by:
+
+- [CleanYourTV](https://github.com/Gathin23/cleanyourtv) by Gathin23, the base of this repo.
+- [Clean Your TV app](https://github.com/udhaykumarbala/cleanyourtv-app) by udhaykumarbala, at `03ad20eb`: the
+  Fire OS protected-package and detection rules; no Android phone app is part of this repo.
+- [fire-tv-cleanup](https://github.com/itsmeterrylin/fire-tv-cleanup) by itsmeterrylin, at `ab4d9bf`: the `HomeRedirectService` concept, reworked to be opt-in.
+- [cleanyour.tv/addons](https://cleanyour.tv/addons): themes, switches and add-ons.
+
 ## How it works
 
 Android TVs have the same debug bridge as Android phones. Switch on USB debugging in the TV's
@@ -120,7 +143,7 @@ Anything running **Android TV** or **Google TV**.
 | Platform | What works |
 |---|---|
 | **Android TV, Google TV** | The debloat and the launcher. |
-| **Fire TV** | The debloat half only, since Fire OS will not hand Home to a third-party launcher. And on the 2015 Fire TV Box (Fire OS 5) even that half fails: every `pm` route is refused. |
+| **Fire TV** | The focus of this integration branch. The debloat half works; the launcher installs as an ordinary app, but Fire OS will not hand Home to a third-party launcher by default, and Home takeover is a separate step that needs the owner's approval and a check on the real TV. `com.amazon.tv.launcher` is never disabled. And on the 2015 Fire TV Box (Fire OS 5) even that half fails: every `pm` route is refused. |
 | **A few China-market TCL sets** | They refuse to install any launcher at all; their lists say so in the header. |
 | **Samsung (Tizen), LG (webOS), Roku, Vizio, Hisense VIDAA** | Not supported (no ADB). Turn off the tracking instead: [cleanyour.tv/not-android](https://cleanyour.tv/not-android). See [SHOWCASE.md](SHOWCASE.md#other-platforms-fire-tv-and-lg-webos) for four webOS ports, and [docs/devices/samsung-tizen.md](docs/devices/samsung-tizen.md) for what a 2021 Samsung set answers over Wi-Fi (no ADB, so no `pm disable-user`) if you are weighing a Tizen port. |
 
@@ -199,6 +222,8 @@ python3 tools/wallpaper_prep.py ~/Pictures/trip mytheme/wallpapers   # your phot
 | [`tools/relay.py`](tools/relay.py) | Forwards a local port to the TV's ADB port, for assistants whose sandbox can't reach your network. Listens on this computer only. [Guide](tools/relay.md). |
 | [`tools/disable.sh`](tools/disable.sh), [`restore.sh`](tools/restore.sh) | Apply or undo a debloat list, the undo from the state recorded before the change. |
 | [`tools/recovery.py`](tools/recovery.py) | Writes the record `disable.sh` needs to undo itself, and prints the restore batch. |
+| [`tools/install_apk.py`](tools/install_apk.py) | Installs an APK as an ordinary app, with a local check first, a unique staging file and no Home, accessibility or secure-settings change ([Fire OS](docs/fireos.md)). |
+| [`tools/home_redirect.py`](tools/home_redirect.py) | `status`, `enable --confirm` and `disable` for the launcher's opt-in Fire OS Home redirect, keeping every other accessibility service. |
 | [`tools/check.py`](tools/check.py) | Compares the TV with the list that was applied, for what a firmware update undid; `--fix` puts it back. |
 | [`tools/match.py`](tools/match.py) | Reads a saved `pm list packages` and prints, for each package, how many lists in `examples/` disable it, how many keep it commented out, and their most common note; Android's core packages show as `never`. Offline, changes nothing (`tools/venv/bin/python -I tools/match.py packages.txt`). |
 | [`tools/adb-closed.py`](tools/adb-closed.py) | Checks that the TV's network ADB port is closed once debugging is off: exits 0 when the TV refuses the connection, 1 while it is still open, 2 when nothing answered or the check itself could not run. No `nc` needed. |

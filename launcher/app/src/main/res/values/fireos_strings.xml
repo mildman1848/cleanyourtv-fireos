@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fire OS Home redirect (docs/fireos.md). English only for this test release, so not translatable. -->
+<resources>
+    <string name="home_redirect_label" translatable="false">Home redirect (Fire OS)</string>
+    <string name="home_redirect_description" translatable="false">Opens this launcher over Amazon\'s Home screen. Off unless you turn it on. It reads window changes only, never screen content.</string>
+</resources>

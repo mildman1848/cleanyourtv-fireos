@@ -66,6 +66,8 @@ The person's backups (`backup/`), screenshots (`shots/`), notes (`work/`) and th
 (`tools/adbkey/`) are listed in `.gitignore` and must never be committed. If the person wants to
 share their TV's list afterwards, follow [`docs/workflows/tv-list.md`](docs/workflows/tv-list.md).
 
+Fire OS fork: never bulk-delete upstream docs, tests or examples; see README "Fire OS integration".
+
 ## Repo map
 
 | Path | What it is |

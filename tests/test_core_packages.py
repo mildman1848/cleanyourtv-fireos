@@ -47,6 +47,10 @@ CORE = [
     "android.ext.services", "android.ext.shared",
     # TV middleware: a Haier H50H5F restarted in a loop with com.cltv.mal off (#1578).
     "com.cltv.mal", "com.mediatek.tis", "com.mediatek.tv.service", "com.mediatek.tv.agent",
+    # Fire OS: Amazon's Home and Settings are protected (firmware refuses pm disable-user, and the
+    # accessibility/Home-redirect work depends on them staying reachable). See docs/fireos.md.
+    "com.amazon.tv.launcher", "com.amazon.firehomestarter", "com.amazon.tv.settings",
+    "com.amazon.tv.settings.v2", "com.amazon.tv.quicksettings",
 ]
 # Look alike but are fine: what tested lists disable, and names that only share a prefix.
 NOT_CORE = [
@@ -64,6 +68,9 @@ NOT_CORE = [
     "com.android.sdksandbox2", "com.example.sdksandbox",
     # Only the exact fused location package is protected for #2803.
     "com.android.location.fused.overlay", "com.google.android.location.fused",
+    # Amazon packages that tested Fire OS lists do turn off, and names that only share a prefix.
+    "com.amazon.tv.launcher.overlay", "com.amazon.tv.settingsx", "com.amazon.minitv.android.app",
+    "com.amazon.hybridadidservice", "com.amazon.tv.livetv",
 ]
 
 

@@ -1,11 +1,14 @@
 # The prompt
 
 Paste this into Claude Code (or another coding assistant with shell access) on a computer that is
-on the same Wi-Fi as the TV. Works on Android TV / Google TV sets (Xiaomi, TCL, Hisense, Sony,
-OnePlus, Realme, Nvidia Shield and most others). It will not work on Samsung Tizen, LG webOS or
-Fire TV. For Samsung, LG, Roku and other non-Android TVs, use https://cleanyour.tv/not-android instead:
-it turns off the tracking with the remote. If you cloned this repo, mention that: the assistant can reuse `tools/` and `launcher/`
-instead of writing them from scratch, and only needs to edit `launcher/.../values/config.xml`.
+on the same Wi-Fi as the TV. This fork's procedure is aimed at **Amazon Fire TV / Fire OS** (Fire TV
+Stick, Fire TV Cube, Fire TV Edition sets). The generic Android TV / Google TV steps inherited from
+upstream CleanYourTV stay below, because the repo keeps its full base; the `examples/` lists are
+upstream's and are not all Fire OS, so use one only if its header names your exact Fire TV model. It
+will not work on Samsung Tizen, LG webOS, Roku or other non-Android sets: use
+https://cleanyour.tv/not-android instead, which turns off the tracking with the remote.
+If you cloned this repo, mention that: the assistant can reuse `tools/` and `launcher/` instead of writing
+them from scratch, and only needs to edit `launcher/.../values/config.xml`.
 
 Before you start, on the TV: Settings → Device Preferences → About → press OK on "Build" 7 times,
 then go back → Developer options → turn on USB debugging (and Network/ADB debugging if your TV
@@ -15,13 +18,43 @@ adapter on that port can drop the same way, so plan to do the whole session in o
 
 ---
 
-I want to debloat my Android TV and replace its launcher with a clean Apple TV style home screen.
-My TV model is: <MODEL NAME HERE>. Work on the real device, step by step, and verify everything you
+I want to debloat my Amazon Fire TV and install a clean Apple TV style launcher as an ordinary app.
+My Fire TV model is: <MODEL NAME HERE>. Work on the real device, step by step, and verify everything you
 do with screenshots pulled from the TV. Ask me before anything that depends on my preferences.
 Where these steps name a file under `tools/`, `docs/` or `examples/` that is not in your working
-folder, you are running without this repo: clone it first with
-`git clone https://github.com/Gathin23/cleanyourtv` and work from there, so `tools/disable.sh` and the
+folder, you are running without this repo: clone the Fire OS fork first with
+`git clone https://github.com/mildman1848/cleanyourtv-fireos` and work from there, so `tools/disable.sh` and the
 rest keep their safety checks, rather than stopping or writing your own.
+
+Fire TV / Fire OS (read before Debloat and Launcher)
+- On Fire TV these rules override all generic Android TV / Google TV instructions below. For this Fire OS
+  workflow, skip the generic Launcher and launcher-Verify sections entirely; the current build-and-install
+  script also enables accessibility and writes secure settings, so do not run it on Fire OS. Install the
+  APK with `tools/install_apk.py <apk>` instead: it installs it as an ordinary app without changing Home,
+  accessibility or secure settings (docs/fireos.md).
+- Confirm it is Fire OS: `getprop ro.build.version.sdk`, `getprop ro.product.manufacturer` (Amazon) and
+  `pm list packages | grep com.amazon.tv.launcher`. Record the model, Fire OS and Android version.
+- Never uninstall or disable `com.amazon.tv.launcher`, Amazon's Home. No step may depend on it being
+  off. Leave the other Amazon packages the set needs to boot, pair its remote, sign in and update
+  alone as well; if a package name is unclear, read `dumpsys package <name>` and ask me.
+- Installing the launcher as an ordinary app and taking over Home are two separate things. Installing
+  it and opening it from the apps row is the default, and the only thing you do unasked. Fire OS does
+  not hand Home to a third-party launcher by default: `set-home-activity` and the HOME intent may not
+  move it, so do not tell me the launcher "is now Home", and do not imply Home-key
+  behaviour works on this TV unless it was shown working on it.
+- Home takeover and the Home key go through the launcher's `HomeRedirectService`, an accessibility
+  service (turned on with `tools/home_redirect.py enable --confirm` or in the TV's Settings >
+  Accessibility, undone with `tools/home_redirect.py disable` or the same Settings entry), or a key
+  helper. The launcher has no boot autostart. Do none of it unasked. Before any of those actions, stop,
+  explain what it changes and how to undo it, and wait for my explicit yes for this TV. Then check on
+  the real device, with me: Home opens the launcher, the real remote's Home button works (an injected
+  key is not proof), the TV boots and ADB comes back after a reboot, and Amazon Home is still
+  reachable. If any check fails, undo it and say so.
+- Do not run a command that grants `WRITE_SECURE_SETTINGS` (`pm grant ... WRITE_SECURE_SETTINGS`) or
+  turns an accessibility service on (`settings put secure enabled_accessibility_services ...`,
+  `accessibility_enabled`) without my explicit approval of that exact command. They are not part of
+  this generic flow.
+- The 2015 Fire TV Box (Fire OS 5) refuses `pm disable-user` altogether; see the Debloat rules below.
 
 Connect
 - Find the TV on my network (hostname, ARP table, or ask me for the IP) and connect over ADB on port 5555.
