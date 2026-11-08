@@ -8,6 +8,7 @@ import android.os.ParcelFileDescriptor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * Lets tools/theme.sh write the theme files into {@link Config#dir} on firmware where the adb shell is
@@ -25,10 +26,27 @@ public class ThemeProvider extends ContentProvider {
         String path = ThemeFiles.path(uri.getPathSegments());
         File dir = Config.dir(getContext());
         if (dir == null || path == null) throw new FileNotFoundException(String.valueOf(uri));
-        File f = new File(dir, path);
+        File f = safeFile(dir, path);
         File parent = f.getParentFile();
         if (parent != null && !parent.isDirectory() && !parent.mkdirs()) throw new FileNotFoundException(String.valueOf(uri));
         return f;
+    }
+
+    /** Resolve provider paths canonically and reject symlinks or traversal outside the theme directory. */
+    static File safeFile(File directory, String relativePath) throws FileNotFoundException {
+        final File root;
+        final File candidate;
+        try {
+            root = directory.getCanonicalFile();
+            candidate = new File(root, relativePath).getCanonicalFile();
+        } catch (IOException e) {
+            throw new FileNotFoundException("Could not resolve theme file");
+        }
+        String rootPrefix = root.getPath() + File.separator;
+        if (!candidate.getPath().startsWith(rootPrefix)) {
+            throw new FileNotFoundException("Theme file resolves outside its directory");
+        }
+        return candidate;
     }
 
     @Override

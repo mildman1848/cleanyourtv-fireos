@@ -181,6 +181,7 @@ class FrigateGlanceInstallTest(unittest.TestCase):
             path.write_text("#!/bin/sh\n" + body + "\n")
             path.chmod(0o755)
         self.config = self.root / "config.json"
+        # Deliberately fake credential in this test's TemporaryDirectory; it is never a production secret.
         self.config.write_text(json.dumps({"mqtt": f"mqtt://glance:{SECRET}@broker.invalid:1883",
                                            "frigateUrl": "http://frigate.invalid:5000"}))
 
