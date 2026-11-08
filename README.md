@@ -6,7 +6,7 @@ English · [Deutsch](README.de.md)
 
 Upstream CleanYourTV remains the project for Android TV and Google TV: [Gathin23/cleanyourtv](https://github.com/Gathin23/cleanyourtv). This fork keeps its launcher and selected tooling as a base, then adds Fire OS-specific installation safeguards and experiments. The goal is to make a Fire TV Stick or Cube usable with the CleanYourTV launcher without pretending that Fire OS behaves like ordinary Android TV. It does not.
 
-> **Current status:** the launcher has a public, debug-signed test APK. The three add-ons have German resources and debug-signed test APKs in the [Fire OS add-on test release](https://github.com/mildman1848/cleanyourtv-fireos/releases/tag/fireos-addons-test-2026-11-07). Unit tests, lint and release builds passed for those test artifacts. They are not production-signed. A user reports that the Home redirect appears to work, but the exact device/Fire OS version and test scenarios are unrecorded; boot after a full reboot remains unverified.
+> **Current status:** the launcher has a public, debug-signed test APK built from commit `ba3a493` in the [2026-11-08 Fire OS launcher test release](https://github.com/mildman1848/cleanyourtv-fireos/releases/tag/fireos-test-2026-11-08). The three add-ons have German resources and debug-signed test APKs in the [Fire OS add-on test release](https://github.com/mildman1848/cleanyourtv-fireos/releases/tag/fireos-addons-test-2026-11-07). Unit tests, lint and release builds passed for those test artifacts. They are not production-signed. A user reports that the Home redirect appears to work, but the exact device/Fire OS version and test scenarios are unrecorded; boot after a full reboot remains unverified.
 
 ## What this fork changes
 
@@ -21,7 +21,7 @@ This fork does **not** currently provide a verified Fire OS autostart solution, 
 
 The current test release is here:
 
-**[Download CleanYourTV Fire OS test release](https://github.com/mildman1848/cleanyourtv-fireos/releases/tag/fireos-test-2026-11-07)**
+**[Download CleanYourTV Fire OS test release](https://github.com/mildman1848/cleanyourtv-fireos/releases/tag/fireos-test-2026-11-08)**
 
 It contains the existing CleanYourTV launcher as an ordinary APK. It is signed with a debug key for initial sideload testing, not a production signing key. Installing it does **not** make it the Fire TV Home screen and does **not** enable the redirect service.
 

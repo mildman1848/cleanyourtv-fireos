@@ -1,6 +1,6 @@
 # Fire OS (test release)
 
-**Status: first public test release. A user reports that the Home redirect appears to work on their Fire TV.** The exact model, Fire OS version and test scenarios were not recorded, and the result has not been independently reproduced by a maintainer; do not treat it as a general compatibility claim. The tests without a TV cover fake devices and Java redirect logic only. **There is no separate boot autostart:** starting the launcher after a full reboot has not been reported or verified.
+**Status: public test release; the current launcher APK is the [2026-11-08 build](https://github.com/mildman1848/cleanyourtv-fireos/releases/tag/fireos-test-2026-11-08) from commit `ba3a493`. A user reports that the Home redirect appears to work on their Fire TV.** The exact model, Fire OS version and test scenarios were not recorded, and the result has not been independently reproduced by a maintainer; do not treat it as a general compatibility claim. The tests without a TV cover fake devices and Java redirect logic only. **There is no separate boot autostart:** starting the launcher after a full reboot has not been reported or verified.
 
 ## Sources and exact commits
 
