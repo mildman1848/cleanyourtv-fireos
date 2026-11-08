@@ -50,7 +50,8 @@ normally. Which address each app understands is the app's own business and not c
 ## Install
 
 JDK 17 and Android SDK 34, as for the launcher, and the `tools/venv` from the main README. The `gradlew`
-scripts reuse the launcher's pinned Gradle wrapper with this folder as the project.
+scripts reuse the launcher's pinned Gradle wrapper with this folder as the project. The release APK
+(`app/build/outputs/apk/release/app-release.apk`) is signed with the debug key: it installs, but it is not a published build, and an APK from another machine's debug key must be uninstalled first.
 
 ```sh
 TV_HOST=192.168.1.50 addons/wake-app/build-and-install.sh

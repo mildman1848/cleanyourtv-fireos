@@ -1,10 +1,6 @@
 # Fire OS (test release)
 
-**Status: first public test release. None of this has been shown working on a real Fire TV by this repo's
-maintainers yet.** What exists is code and tests that run without a TV (Python tests against fake TVs). The
-launcher's Java unit tests (`HomeRedirectLogicTest`, the fail-closed gate) pass in a local
-`./gradlew testReleaseUnitTest`. Until someone reports a real device, do **not** assume that Home takeover
-or the Home button work on Fire OS. **There is no autostart:** nothing opens the launcher at boot.
+**Status: first public test release. A user reports that the Home redirect appears to work on their Fire TV.** The exact model, Fire OS version and test scenarios were not recorded, and the result has not been independently reproduced by a maintainer; do not treat it as a general compatibility claim. The tests without a TV cover fake devices and Java redirect logic only. **There is no separate boot autostart:** starting the launcher after a full reboot has not been reported or verified.
 
 ## Sources and exact commits
 
@@ -95,3 +91,20 @@ reboots and ADB comes back; the redirect is switched off by `disable`.
 - Routing `launcher/build-and-install.sh` and add-on installers through `tools/install_apk.py`.
 - An on/off screen inside the launcher and an opt-in open at boot: both were left out of this release to
   keep the APK under the size gate.
+
+## Build and install the three add-ons
+
+JDK 17 and Android SDK 34. `<tv ip>` is your TV; each command installs only the named APK.
+
+| Add-on | Build (in its folder) | APK | Signed with |
+|---|---|---|---|
+| TV Hub | `./gradlew assembleDebug` | `addons/tv-hub/app/build/outputs/apk/debug/app-debug.apk` | debug key (release is unsigned unless `TVHUB_KEYSTORE*` are set) |
+| Sources | `./gradlew assembleRelease` | `addons/sources/app/build/outputs/apk/release/app-release.apk` | debug key |
+| Open on wake | `./gradlew assembleRelease` | `addons/wake-app/app/build/outputs/apk/release/app-release.apk` | debug key |
+
+```
+TV_HOST=<tv ip> tools/venv/bin/python -I tools/install_apk.py addons/sources/app/build/outputs/apk/release/app-release.apk
+```
+
+These are published test builds, not production-signed or reproducible releases; all three include German resources selected when the TV's language is German. Build TV Hub with `assembleDebug` for an installable test APK; `assembleRelease` produces an unsigned APK unless a release key is supplied.
+Open on wake needs its `build-and-install.sh` for the overlay grant. **That script changes TV app permissions/settings** (`SYSTEM_ALERT_WINDOW`, possible vendor auto-start appops and a foreground service); review it before running. No signing key is kept in the repo.

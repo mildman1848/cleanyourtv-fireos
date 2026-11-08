@@ -6,7 +6,6 @@ on:
   pull_request:
     paths: ["addons/**"]
   push:
-    branches: [main]
     paths: ["addons/**"]
 
 permissions:
