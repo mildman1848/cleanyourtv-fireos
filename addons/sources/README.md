@@ -29,7 +29,7 @@ JDK 17 and Android SDK platform 34 with build-tools 34.0.0, as for the launcher.
 TV_HOST=<tv ip> addons/sources/install.sh
 ```
 
-To build only: `cd addons/sources && ./gradlew assembleRelease`; the JVM tests run with `./gradlew testReleaseUnitTest`.
+The release APK (`app/build/outputs/apk/release/app-release.apk`) is signed with the debug key, so it installs but is not a published build; a different machine's debug key means uninstalling before `pm install -r` accepts it. To build only: `cd addons/sources && ./gradlew assembleRelease`; the JVM tests run with `./gradlew testReleaseUnitTest`.
 
 ## Limits
 

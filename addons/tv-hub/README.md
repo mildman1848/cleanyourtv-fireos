@@ -68,7 +68,7 @@ TV_HOST=<tv ip> tools/venv/bin/python -I tools/tv.py 'pm install -r /data/local/
 or `adb install -r app/build/outputs/apk/debug/app-debug.apk`. It opens from the TV's app list as
 **TV Hub**; on Fire TV it is under Apps > Your Apps.
 
-The debug APK is signed with a throwaway key that changes between machines. For anything you keep,
+The debug APK is debug-signed with a throwaway key that changes between machines (uninstall first when it comes from another machine). `assembleRelease` without the `TVHUB_*` variables below gives `app-release-unsigned.apk`, which `pm install` refuses; use `assembleDebug` for a test install. For anything you keep,
 build a release with your own key (below): the launcher pins its approval of the card to the signing
 key, and a different key makes it ask again.
 

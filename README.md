@@ -6,14 +6,14 @@ English · [Deutsch](README.de.md)
 
 Upstream CleanYourTV remains the project for Android TV and Google TV: [Gathin23/cleanyourtv](https://github.com/Gathin23/cleanyourtv). This fork keeps its launcher and selected tooling as a base, then adds Fire OS-specific installation safeguards and experiments. The goal is to make a Fire TV Stick or Cube usable with the CleanYourTV launcher without pretending that Fire OS behaves like ordinary Android TV. It does not.
 
-> **Current status:** the launcher has a public, debug-signed test APK. The three add-ons now have German resources and debug-signed test APKs in the [Fire OS add-on test release](https://github.com/mildman1848/cleanyourtv-fireos/releases/tag/fireos-addons-test-2026-11-07). Their unit tests, lint and release builds passed. These are test builds, not production-signed. Add-on behavior has not been validated on a real Fire TV; Home takeover and launcher boot autostart remain unverified.
+> **Current status:** the launcher has a public, debug-signed test APK. The three add-ons have German resources and debug-signed test APKs in the [Fire OS add-on test release](https://github.com/mildman1848/cleanyourtv-fireos/releases/tag/fireos-addons-test-2026-11-07). Unit tests, lint and release builds passed for those test artifacts. They are not production-signed. A user reports that the Home redirect appears to work, but the exact device/Fire OS version and test scenarios are unrecorded; boot after a full reboot remains unverified.
 
 ## What this fork changes
 
 - **Fire OS-safe APK installation.** `tools/install_apk.py` installs an APK as an ordinary app. It does not switch the Home app, enable accessibility, or write secure settings.
 - **Protected Amazon components.** Fire TV Home, Amazon Settings and Quick Settings packages are protected from the repository's package-disable and recovery paths. System packages are not uninstalled.
 - **Optional Home redirect in the launcher.** `HomeRedirectService` is off by default. It is an experiment, not a supported Fire OS launcher replacement; its behavior depends on the exact Fire OS version and device.
-- **Companion add-ons.** Separate apps are being prepared for TV Hub, Sources and Open on wake. German resources and installable APKs are part of this fork's scope; see [Add-on status](#add-ons).
+- **Companion add-ons.** Separate test-build apps for TV Hub, Sources and Open on wake are available; see [add-on status](#add-ons).
 
 This fork does **not** currently provide a verified Fire OS autostart solution, a Fire OS settings-cleanup app, or a validated list of "50+" Fire OS settings. The source used for platform detection and package protections does not establish such a list. No unsupported `settings put` commands are added.
 
@@ -55,7 +55,7 @@ Read [the Fire OS guide](docs/fireos.md) and [the Fire OS test prompt](PROMPT.md
 | Install launcher as an ordinary app | Public debug-signed test APK; installation was confirmed by a tester. |
 | Disable/restore packages | Fire OS packages are guarded, but use only a model-specific, reviewed list. No new Amazon cleanup list is claimed here. |
 | Amazon Home, Settings and Quick Settings | Protected; never disable or uninstall them as part of this fork's procedure. |
-| Home-key redirect | Optional, off by default, unverified on the target Fire TV. Keep a recovery path. |
+| Home-key redirect | Optional, off by default. One user reports that it appears to work; exact Fire TV model and Fire OS version are not recorded, so this is not a general compatibility claim. Keep a recovery path. |
 | Start launcher at boot / wake | Not implemented or verified in this fork. |
 | Fire OS 5 (2015 Fire TV Box) | `pm disable-user` is refused on the reported device; do not treat this as a supported debloat target. |
 | Android TV / Google TV | Use upstream CleanYourTV instead. This fork's documentation and testing target Fire OS. |

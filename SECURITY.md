@@ -5,10 +5,10 @@ reach people's living rooms. Please report anything you find privately, not in a
 
 ## How to report
 
-Use GitHub's private vulnerability reporting: open the
-[Security tab](https://github.com/Gathin23/cleanyourtv/security) and choose **Report a vulnerability**.
-Only the maintainer sees the report. If that doesn't work for you, email
-[hello@itsgathin.com](mailto:hello@itsgathin.com) with "Security" in the subject.
+Use GitHub's private vulnerability reporting for **this repository**: open the
+[Security Advisories page](https://github.com/mildman1848/cleanyourtv-fireos/security/advisories/new)
+and choose **Report a vulnerability**. The feature is enabled for this repository; the report is
+private and visible to its maintainers.
 
 Please include what is affected (the prompt, a tool in `tools/`, the launcher, a debloat list),
 the steps to reproduce it, and what an attacker could do with it.

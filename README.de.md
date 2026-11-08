@@ -6,14 +6,14 @@
 
 Das ursprüngliche CleanYourTV bleibt das Projekt für Android TV und Google TV: [Gathin23/cleanyourtv](https://github.com/Gathin23/cleanyourtv). Dieser Fork übernimmt den Launcher und ausgewählte Werkzeuge als Grundlage und ergänzt Fire-OS-spezifische Installationssicherungen und Experimente. Ziel ist, den CleanYourTV-Launcher auf einem Fire TV Stick oder Cube nutzbar zu machen, ohne so zu tun, als wäre Fire OS normales Android TV. Das wäre eine optimistische, aber falsche Annahme.
 
-> **Aktueller Stand:** Für den Launcher gibt es ein öffentliches, mit einem Debug-Schlüssel signiertes Test-APK. Die drei Add-ons haben deutsche Ressourcen und debug-signierte Test-APKs im [Fire-OS-Add-on-Test-Release](https://github.com/mildman1848/cleanyourtv-fireos/releases/tag/fireos-addons-test-2026-11-07). Unit-Tests, Lint und Release-Builds waren erfolgreich. Das sind Test-Builds, keine produktiv signierten APKs. Das Verhalten der Add-ons wurde noch nicht auf einem echten Fire TV geprüft; Home-Übernahme und Launcher-Autostart beim Booten bleiben ungeprüft.
+> **Aktueller Stand:** Für den Launcher gibt es ein öffentliches, mit einem Debug-Schlüssel signiertes Test-APK. Die drei Add-ons haben deutsche Ressourcen und debug-signierte Test-APKs im [Fire-OS-Add-on-Test-Release](https://github.com/mildman1848/cleanyourtv-fireos/releases/tag/fireos-addons-test-2026-11-07). Unit-Tests, Lint und Release-Builds liefen für diese Test-Artefakte erfolgreich. Es sind keine produktiv signierten APKs. Ein Nutzer berichtet, dass der Home-Redirect offenbar funktioniert; konkretes Gerät, Fire-OS-Version und Testszenarien sind nicht dokumentiert. Der Start nach einem vollständigen Neustart bleibt ungeprüft.
 
 ## Was dieser Fork ändert
 
 - **Fire-OS-sichere APK-Installation.** `tools/install_apk.py` installiert eine APK als normale App. Es ändert weder die Home-App noch aktiviert es Bedienungshilfen oder schreibt Secure Settings.
 - **Geschützte Amazon-Komponenten.** Fire-TV-Home, Amazon-Einstellungen und Quick Settings sind in den Paket-Deaktivierungs- und Wiederherstellungspfaden geschützt. Systempakete werden nicht deinstalliert.
 - **Optionaler Home-Redirect im Launcher.** `HomeRedirectService` ist nach der Installation ausgeschaltet. Er ist ein Experiment, kein unterstützter Ersatz für Fire TVs Home-Bildschirm; das Verhalten hängt vom konkreten Gerät und Fire OS ab.
-- **Zusatz-Apps.** Separate Apps für TV Hub, Sources und Open on wake werden vorbereitet. Deutsche Übersetzungen und installierbare APKs gehören zum Umfang dieses Forks; siehe [Add-on-Status](#add-ons).
+- **Zusatz-Apps.** Separate Test-Builds für TV Hub, Sources und Open on wake sind verfügbar; siehe [Add-on-Status](#add-ons).
 
 Dieser Fork enthält derzeit **keinen verifizierten Fire-OS-Autostart**, keine Fire-OS-Bereinigungs-App für Einstellungen und keine bestätigte Liste mit „50+“ Fire-OS-Einstellungen. Die als Referenz verwendete Quelle belegt Fire-OS-Erkennung und Paket-Schutz, nicht eine solche Liste. Unbelegte `settings put`-Befehle werden nicht ergänzt.
 
@@ -55,7 +55,7 @@ Lies vor Änderungen an Geräteeinstellungen die [Fire-OS-Anleitung](docs/fireos
 | Launcher als normale App installieren | Öffentliches, mit Debug-Schlüssel signiertes Test-APK; die Installation wurde von einem Tester bestätigt. |
 | Pakete deaktivieren/wiederherstellen | Fire-OS-Pakete sind geschützt. Nutze nur eine geprüfte Liste für genau dein Modell; eine neue Amazon-Bereinigungsliste wird hier nicht behauptet. |
 | Amazon Home, Einstellungen und Quick Settings | Geschützt; im Rahmen dieses Forks niemals deaktivieren oder deinstallieren. |
-| Home-Tasten-Redirect | Optional, standardmäßig aus, auf dem Zielgerät nicht verifiziert. Einen Rückweg bereithalten. |
+| Home-Tasten-Redirect | Optional, standardmäßig aus. Ein Nutzer berichtet, dass er offenbar funktioniert; konkretes Fire-TV-Modell und Fire-OS-Version sind nicht dokumentiert. Das ist keine allgemeine Kompatibilitätszusage. Einen Rückweg bereithalten. |
 | Launcher bei Boot/Wake starten | In diesem Fork weder implementiert noch verifiziert. |
 | Fire OS 5 (Fire TV Box von 2015) | `pm disable-user` wird auf dem gemeldeten Gerät verweigert; keine unterstützte Debloat-Zielplattform. |
 | Android TV / Google TV | Dafür den Upstream CleanYourTV verwenden. Dokumentation und Tests dieses Forks zielen auf Fire OS. |
